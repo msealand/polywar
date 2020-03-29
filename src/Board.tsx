@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stage, Layer, Image } from 'react-konva';
 import useImage from 'use-image';
 
-import { Territory } from './Territory';
+import { Territory, TerritoryComponent } from './Territory';
+
+export type Board = {
+  territories: Array<Territory>
+}
 
 const BoardMapImage = (props: {
   boardId: string;
@@ -13,26 +17,28 @@ const BoardMapImage = (props: {
 
 type BoardOptions = {
   width: number,
-  height: number
+  height: number,
+
+  board: Board
 }
 
-export const Board = (props: BoardOptions) => {
+export const BoardComponent = (props: BoardOptions) => {
+  const [board, setBoard] = useState<Board>(props.board);
+
+  const territoryComponents = board.territories.map((territory, idx) => {
+    // territory.units = 3;
+    // territory.colorIdx = idx;
+    return <TerritoryComponent key={territory.id} territory={territory} />
+  })
+
   return (
-    // width={window.innerWidth} height={window.innerHeight}
-  <Stage width={props.width} height={props.height}>
-    <Layer>
-      <BoardMapImage boardId="1584805889" />
-    </Layer>
-    <Layer>
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={0} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={1} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={2} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={3} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={4} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={5} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={6} />
-      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={7} />
-    </Layer>
-  </Stage>
+    <Stage width={props.width} height={props.height}>
+      <Layer>
+        <BoardMapImage boardId="1584805889" />
+      </Layer>
+      <Layer>
+        {territoryComponents}
+      </Layer>
+    </Stage>
   );
 };

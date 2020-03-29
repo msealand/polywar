@@ -1,43 +1,52 @@
 import React, { useState } from 'react';
 import { Circle, Text } from 'react-konva';
 
-type TerritoryState = {
-  units: number;
+export type Coordinate = { x: number, y: number };
+
+export type Territory = {
+  id: string;
+  name: string;
   colorIdx: number;
+
+  position: Coordinate;
+  borders: Array<string>;
+
+  units: number;
 };
 
-export const Territory = (props: {
-  x: number;
-  y: number;
-  colorIdx?: number;
-}) => {
-  const [state, setState] = useState<TerritoryState>({ units: 3, colorIdx: props.colorIdx ?? 0 });
+export const TerritoryComponent = (props: { territory: Territory }) => {
+  const [territory, setTerritory] = useState<Territory>(props.territory);
 
   const handleClick = () => {
-    const units = state.units + 1;
-    setState({
-      units: units,
-      colorIdx: state.colorIdx
-    });
+    if (territory.colorIdx === undefined) {
+      territory.colorIdx = 7;
+    }
+    territory.units = (territory.units ?? 0) + 1;
+    setTerritory(Object.assign({}, territory));
   };
+
+  const units = territory.units ?? 0;
+
+  const fillColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%)` : `hsl(0, 0%, 25%)`;
+  const strokeColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
 
   return (
     <React.Fragment>
-      <Circle x={props.x} y={props.y} radius={12} fill={`hsl(${(state.colorIdx ?? 0) * 137.508}, 50%, 25%)`} />
-      <Circle x={props.x} y={props.y} radius={12} strokeWidth={2} stroke={`hsl(${(state.colorIdx ?? 0) * 137.508}, 100%, 70%)`} />
+      <Circle x={territory.position.x} y={territory.position.y} radius={9} fill={fillColor} />
+      <Circle x={territory.position.x} y={territory.position.y} radius={9} strokeWidth={2} stroke={strokeColor} />
       <Text 
-        x={props.x - 12}
-        y={props.y - 12} 
+        x={territory.position.x - (territory.units < 10 ? 11.5 : 12)} // Being super picky here
+        y={territory.position.y - 11.5} 
         width={24} 
         height={24} 
-        fontSize={state.units < 100 ? 14 : 10} 
+        fontSize={units < 100 ? (units < 10 ? 11 : 10) : 8} 
         fontStyle="bold"
         fontFamily="source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace"
         fill="white" 
         align="center" 
         verticalAlign="middle" 
 
-        text={`${state.units}`} 
+        text={`${units}`} 
         onClick={handleClick}
       />
     </React.Fragment>
