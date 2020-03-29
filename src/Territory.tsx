@@ -82,7 +82,7 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
         else { otherPos.y -= (yDelta * 2.0) }
     }
 
-    return <Line 
+    return <Line key={`${territory.id}-${otherTerritory.id}`}
       points={[ pos.x, pos.y, otherPos.x, otherPos.y ]}
       strokeWidth={1}
       strokeLinearGradientStartPointX={pos.x}

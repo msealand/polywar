@@ -1,21 +1,22 @@
-import React, { Component } from 'react';
 import { BoardComponent } from './Board';
 
+import { Ctx } from 'boardgame.io';
+import { Client } from 'boardgame.io/react';
 
-import { loadBoard } from './loadBoard';
-const board = loadBoard();
+const PolyWar = {
+  setup: () => ({ boardData: require('./map.json') }),
 
+  moves: {
+    clickCell: (G: any, ctx: Ctx, id: any) => {
+      console.log(`do something...`);
+    },
+  },
+};
 
-class App extends Component {
-  render() {
-    return (
-      <div className="h-100 row align-items-center">
-        <div className="col d-flex justify-content-center">
-          <BoardComponent width={1003} height={588} board={board} />
-        </div>
-      </div>
-    );
-  }
-}
+const App = Client({ 
+  debug: true,
+  game: PolyWar,
+  board: BoardComponent
+});
 
 export default App;

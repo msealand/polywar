@@ -1,16 +1,14 @@
-import { Board } from './Board';
+import { Board } from './Map';
 import { Territory } from './Territory';
 import { Delaunay } from "d3-delaunay";
 
-export function loadBoard(): Board {
-  const boardData = require('./map.json') as Board;
-
-  const territoryMap = boardData.territories.reduce((map, t) => {
-    map.set(t.id, t);
+export function loadBoard(boardData: any): Board {
+  const territoryMap = boardData.territories.reduce((map: Map<string, Territory>, t: Territory) => {
+    map.set(t.id, { ...t });
     return map;
   }, new Map<string, Territory>());
 
-  const territories = Array.from(territoryMap.values());
+  const territories: Array<Territory> = Array.from(territoryMap.values());
   const allPoints = territories.reduce<Array<Array<number>>>((points, t) => {
     points.push([t.position.x, t.position.y]);
     return points;
@@ -28,5 +26,5 @@ export function loadBoard(): Board {
     return t;
   });
 
-  return boardData;
+  return { territories };
 }
