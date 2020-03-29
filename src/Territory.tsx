@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Circle, Text, Line } from 'react-konva';
+import { Circle, Text, Line, Group } from 'react-konva';
 
 export type Coordinate = { x: number, y: number };
 
@@ -14,22 +14,38 @@ export type Territory = {
   borderingTerritories: Array<Territory>;
 
   units: number;
+
+  fogged: boolean;
 };
 
 type TerritoryComponentState = {
-  territory: Territory,
-  hovering: boolean
+  territory: Territory
 }
 
 const wrapDeltaWidth = (1003 * 0.5);
 const wrapDeltaHeight = (588 * 0.5);
 
+function colorsForTerritory(territory: Territory) {
+  if (territory.fogged) {
+    const fog = 'hsla(0, 0%, 25%, 0)';
+    return {
+      fillColor: fog,
+      strokeColor: fog,
+      textColor: fog
+    }
+  } else {
+    const fillColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%)` : `hsl(0, 0%, 25%)`;
+    const strokeColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
+    const textColor = 'white';
+    return { fillColor, strokeColor, textColor };
+  }
+}
+
 export const TerritoryBorderComponent = (props: { territory: Territory }) => {
-  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory, hovering: false });
+  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory });
   const territory = territoryState.territory;
 
-  const fillColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%)` : `hsl(0, 0%, 25%)`;
-  const strokeColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
+  const { fillColor, strokeColor } = colorsForTerritory(territory);
 
   const borderPoints = territory.border.reduce<Array<number>>((pts, pt) => {
     pts.push(pt.x, pt.y);
@@ -44,15 +60,15 @@ export const TerritoryBorderComponent = (props: { territory: Territory }) => {
 };
 
 export const TerritoryConnectionsComponent = (props: { territory: Territory }) => {
-  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory, hovering: false });
+  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory });
   const territory = territoryState.territory;
 
-  const territoryColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
+  const { strokeColor: territoryColor } = colorsForTerritory(territory);
 
   const pos = territory.position;
   const connectingLines = territory.borderingTerritories.map((otherTerritory) => {
     const otherPos = Object.assign({}, otherTerritory.position);
-    const otherColor = otherTerritory.colorIdx ? `hsl(${(otherTerritory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
+    const { strokeColor: otherColor } = colorsForTerritory(otherTerritory);
 
     const xDelta = Math.abs(pos.x - otherPos.x);
     if (xDelta > wrapDeltaWidth) {
@@ -85,53 +101,65 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
 };
 
 export const TerritoryComponent = (props: { territory: Territory }) => {
-  const [territoryState, setTerritoryState] = useState<TerritoryComponentState>({ territory: props.territory, hovering: false });
+  const [territoryState, setTerritoryState] = useState<TerritoryComponentState>({ territory: props.territory });
   const territory = territoryState.territory;
+
+  let groupNode: any; // Can't seem to make "Group" work as a type here for some reason...
 
   const handleClick = () => {
     if (territory.colorIdx === undefined) {
       territory.colorIdx = 7;
     }
     territory.units = (territory.units ?? 0) + 1;
-    setTerritoryState({ territory, hovering: territoryState.hovering });
+    setTerritoryState({ territory });
   };
 
   const handleMouseEnter = () => {
-    setTerritoryState({ territory, hovering: true })
+    groupNode?.to({
+      scaleX: 1.5,
+      scaleY: 1.5,
+      duration: 0.2
+    });
   }
 
   const handleMouseLeave = () => {
-    setTerritoryState({ territory, hovering: false });
+    groupNode?.to({
+      scaleX: 1.0,
+      scaleY: 1.0,
+      duration: 0.2
+    });
   }
 
   const units = territory.units ?? 0;
 
-  const fillColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%)` : `hsl(0, 0%, 25%)`;
-  const strokeColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
-
-  const scale = territoryState.hovering ? 1.5 : 1.0
+  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory);
 
   return (
-    <React.Fragment>
-      <Circle x={territory.position.x} y={territory.position.y} radius={9} fill={fillColor} scale={{ x: scale, y: scale}} />
-      <Circle x={territory.position.x} y={territory.position.y} radius={9} strokeWidth={2} stroke={strokeColor} scale={{ x: scale, y: scale}} />
+    <Group
+      ref={(node) => groupNode = node}
+
+      x={territory.position.x}
+      y={territory.position.y} 
+
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Circle radius={9} fill={fillColor} />
+      <Circle radius={9} strokeWidth={2} stroke={strokeColor} />
       <Text 
-        x={territory.position.x - (territory.units < 10 ? 11.5 : 12)} // Being super picky here
-        y={territory.position.y - 11.5} 
+        x={-(units < 10 ? 11.75 : 12)} // Being super picky here
+        y={-11.5}
         width={24} 
         height={24} 
-        fontSize={(units < 100 ? (units < 10 ? 11 : 10) : 8) * scale}
+        fontSize={(units < 100 ? (units < 10 ? 11 : 10) : 8)}
         fontStyle="bold"
         fontFamily="source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace"
-        fill="white" 
+        fill={textColor} 
         align="center" 
         verticalAlign="middle" 
-
         text={`${units}`} 
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       />
-    </React.Fragment>
+    </Group>
   );
 };

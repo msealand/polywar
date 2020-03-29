@@ -29,6 +29,7 @@ function loadBoard(): Board {
       return { x: p[0], y: p[1] }
     });
 
+    // t.fogged = (Math.random() >= 0.33);
     // t.colorIdx = idx;
 
     return t;
