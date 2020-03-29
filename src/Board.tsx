@@ -24,14 +24,14 @@ export const Board = (props: BoardOptions) => {
       <BoardMapImage boardId="1584805889" />
     </Layer>
     <Layer>
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={0} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={1} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={2} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={3} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={4} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={5} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={6} />
-      <Territory x={Math.random() * props.width} y={Math.random() * props.height} colorIdx={7} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={0} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={1} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={2} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={3} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={4} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={5} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={6} />
+      <Territory x={Math.round(Math.random() * props.width)} y={Math.round(Math.random() * props.height)} colorIdx={7} />
     </Layer>
   </Stage>
   );
