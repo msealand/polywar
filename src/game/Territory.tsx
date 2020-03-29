@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Circle, Text, Line, Group } from 'react-konva';
 
 export type Coordinate = { x: number, y: number };
@@ -14,6 +14,7 @@ export type Territory = {
   borderingTerritories: Array<Territory>;
 
   units: number;
+  controlledBy: string;
 
   fogged: boolean;
 };
@@ -42,8 +43,7 @@ function colorsForTerritory(territory: Territory) {
 }
 
 export const TerritoryBorderComponent = (props: { territory: Territory }) => {
-  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory });
-  const territory = territoryState.territory;
+  const territory = props.territory;
 
   const { fillColor, strokeColor } = colorsForTerritory(territory);
 
@@ -60,8 +60,7 @@ export const TerritoryBorderComponent = (props: { territory: Territory }) => {
 };
 
 export const TerritoryConnectionsComponent = (props: { territory: Territory }) => {
-  const [territoryState] = useState<TerritoryComponentState>({ territory: props.territory });
-  const territory = territoryState.territory;
+  const territory = props.territory;
 
   const { strokeColor: territoryColor } = colorsForTerritory(territory);
 
@@ -100,19 +99,12 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
   );
 };
 
-export const TerritoryComponent = (props: { territory: Territory }) => {
-  const [territoryState, setTerritoryState] = useState<TerritoryComponentState>({ territory: props.territory });
-  const territory = territoryState.territory;
+type TerritoryClientHandler = () => void;
+
+export const TerritoryComponent = (props: { territory: Territory, handleClick: TerritoryClientHandler }) => {
+  const territory = props.territory;
 
   let groupNode: any; // Can't seem to make "Group" work as a type here for some reason...
-
-  const handleClick = () => {
-    if (territory.colorIdx === undefined) {
-      territory.colorIdx = 7;
-    }
-    territory.units = (territory.units ?? 0) + 1;
-    setTerritoryState({ territory });
-  };
 
   const handleMouseEnter = () => {
     groupNode?.to({
@@ -141,7 +133,7 @@ export const TerritoryComponent = (props: { territory: Territory }) => {
       x={territory.position.x}
       y={territory.position.y} 
 
-      onClick={handleClick}
+      onClick={props.handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

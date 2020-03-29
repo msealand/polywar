@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Stage, Layer, Image } from 'react-konva';
 import useImage from 'use-image';
 
 import { Territory, TerritoryComponent, TerritoryBorderComponent, TerritoryConnectionsComponent } from './Territory';
-
-import { loadBoard } from './loadBoard';
 
 export type Board = {
   territories: Array<Territory>
@@ -17,27 +15,20 @@ const MapImageComponent = (props: {
   return <Image image={image} />;
 };
 
-// type BoardOptions = {
-//   width: number,
-//   height: number,
-
-//   board: Board
-// }
-
 export const MapComponent = (props: any) => {
-  console.log(`MapComponent created`, props);
+  const { board, moves }: { board: Board, moves: any } = props;
 
-  const [board] = useState<Board>(props.board);
-
-  const territoryComponents = board.territories.map((territory, idx) => {
-    return <TerritoryComponent key={territory.id} territory={territory} />
-  })  
+  const territoryComponents = board.territories.map((territory) => {
+    return <TerritoryComponent key={territory.id} territory={territory} handleClick={() => {
+      moves.deployUnits(territory.id, 1);
+    }} />
+  })
   
-  // const territoryBorderComponents = board.territories.map((territory, idx) => {
-  //   return <TerritoryBorderComponent key={territory.id} territory={territory} />
-  // })
+  const territoryBorderComponents = (false ? board.territories : []).map((territory) => {
+    return <TerritoryBorderComponent key={territory.id} territory={territory} />
+  })
 
-  const territoryConnectionsComponents = board.territories.map((territory, idx) => {
+  const territoryConnectionsComponents = board.territories.map((territory) => {
     return <TerritoryConnectionsComponent key={territory.id} territory={territory} />
   })
 
@@ -46,9 +37,9 @@ export const MapComponent = (props: any) => {
       <Layer>
         <MapImageComponent boardId="1584805889" />
       </Layer>
-      {/* <Layer>
+      <Layer>
         {territoryBorderComponents}
-      </Layer> */}
+      </Layer>
       <Layer>
         {territoryConnectionsComponents}
       </Layer>

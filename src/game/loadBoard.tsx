@@ -1,8 +1,10 @@
 import { Board } from './Map';
 import { Territory } from './Territory';
 import { Delaunay } from "d3-delaunay";
+import { Ctx } from 'boardgame.io';
 
-export function loadBoard(boardData: any): Board {
+export function loadBoard(G: any, ctx: Ctx): Board {
+  const boardData = G.boardData;
   const territoryMap = boardData.territories.reduce((map: Map<string, Territory>, t: Territory) => {
     map.set(t.id, { ...t });
     return map;
@@ -21,6 +23,10 @@ export function loadBoard(boardData: any): Board {
     t.border = voronoi.cellPolygon(idx).map((p) => {
       return { x: p[0], y: p[1] };
     });
+    
+    // This doesn't work??
+    // t.colorIdx = (ctx.player?.state[t.controlledBy] as any)?.colorIdx;
+
     // t.fogged = (Math.random() >= 0.33);
     // t.colorIdx = idx;
     return t;
