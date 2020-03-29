@@ -1,6 +1,6 @@
 import { PluginPlayer } from 'boardgame.io/plugins';
 
-import { deployUnits, completeDeployment } from './Moves';
+import { deployUnits, completeDeploymentPhase, completeAttackPhase, completeTransferPhase } from './Moves';
 
 
 export const PolyWar = {
@@ -34,21 +34,20 @@ export const PolyWar = {
         stages: {
             deploy: {
                 moves: {
-                    deployUnits: deployUnits,
-                    completeDeployment: completeDeployment
+                    deployUnits,
+                    completeDeploymentPhase
                 },
-                next: 'attack',
-                start: true
+                next: 'attack'
             },
             attack: {
                 moves: {
-
+                    completeAttackPhase
                 },
                 next: 'transfer'
             },
             transfer: {
                 moves: {
-
+                    completeTransferPhase
                 }
             }
         }

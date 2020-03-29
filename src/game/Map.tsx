@@ -16,10 +16,11 @@ const MapImageComponent = (props: {
 };
 
 export const MapComponent = (props: any) => {
-  const { board, moves }: { board: Board, moves: any } = props;
+  const { board, moves, isTerritoryActive }: { board: Board, moves: any, isTerritoryActive?: (territory: Territory) => boolean } = props;
 
   const territoryComponents = board.territories.map((territory) => {
-    return <TerritoryComponent key={territory.id} territory={territory} handleClick={() => {
+    const isActive = (isTerritoryActive ? isTerritoryActive(territory) : false);
+    return <TerritoryComponent key={territory.id} territory={territory} isActive={isActive} handleClick={() => {
       moves.deployUnits(territory.id, 1);
     }} />
   })

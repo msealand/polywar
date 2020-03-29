@@ -19,14 +19,10 @@ export type Territory = {
   fogged: boolean;
 };
 
-type TerritoryComponentState = {
-  territory: Territory
-}
-
 const wrapDeltaWidth = (1003 * 0.5);
 const wrapDeltaHeight = (588 * 0.5);
 
-function colorsForTerritory(territory: Territory) {
+function colorsForTerritory(territory: Territory, isActive: boolean = true) {
   if (territory.fogged) {
     const fog = 'hsla(0, 0%, 25%, 0)';
     return {
@@ -35,9 +31,13 @@ function colorsForTerritory(territory: Territory) {
       textColor: fog
     }
   } else {
-    const fillColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%)` : `hsl(0, 0%, 25%)`;
-    const strokeColor = territory.colorIdx ? `hsl(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%)` : `hsl(0, 0%, 70%)`;
-    const textColor = 'white';
+    const alpha = 1.0;
+    const fillColor = territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%, ${alpha})` : `hsla(0, 0%, 25%, ${alpha})`;
+    const strokeColor = 
+      isActive ?
+        territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%, ${alpha})` : `hsla(0, 0%, 70%, ${alpha})`
+      : territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 90%, 60%, ${alpha})` : `hsla(0, 0%, 60%, ${alpha})`;
+    const textColor = `hsla(0, 100%, 100%, ${alpha})`;
     return { fillColor, strokeColor, textColor };
   }
 }
@@ -83,7 +83,7 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
 
     return <Line key={`${territory.id}-${otherTerritory.id}`}
       points={[ pos.x, pos.y, otherPos.x, otherPos.y ]}
-      strokeWidth={1}
+      strokeWidth={0.5}
       strokeLinearGradientStartPointX={pos.x}
       strokeLinearGradientStartPointY={pos.y}
       strokeLinearGradientEndPointX={otherPos.x}
@@ -101,30 +101,34 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
 
 type TerritoryClientHandler = () => void;
 
-export const TerritoryComponent = (props: { territory: Territory, handleClick: TerritoryClientHandler }) => {
+export const TerritoryComponent = (props: { territory: Territory, isActive?: boolean, handleClick: TerritoryClientHandler }) => {
   const territory = props.territory;
 
   let groupNode: any; // Can't seem to make "Group" work as a type here for some reason...
 
   const handleMouseEnter = () => {
-    groupNode?.to({
-      scaleX: 1.5,
-      scaleY: 1.5,
-      duration: 0.2
-    });
+    if (props.isActive) {
+      groupNode?.to({
+        scaleX: 1.5,
+        scaleY: 1.5,
+        duration: 0.2
+      });
+    }
   }
 
   const handleMouseLeave = () => {
-    groupNode?.to({
-      scaleX: 1.0,
-      scaleY: 1.0,
-      duration: 0.2
-    });
+    if (props.isActive) {
+      groupNode?.to({
+        scaleX: 1.0,
+        scaleY: 1.0,
+        duration: 0.2
+      });
+    }
   }
 
   const units = territory.units ?? 0;
 
-  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory);
+  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory, props.isActive);
 
   return (
     <Group
@@ -138,7 +142,7 @@ export const TerritoryComponent = (props: { territory: Territory, handleClick: T
       onMouseLeave={handleMouseLeave}
     >
       <Circle radius={9} fill={fillColor} />
-      <Circle radius={9} strokeWidth={2} stroke={strokeColor} />
+      <Circle radius={9} strokeWidth={props.isActive ? 2.5 : 0.5} stroke={strokeColor} />
       <Text 
         x={-(units < 10 ? 11.75 : 12)} // Being super picky here
         y={-11.5}
