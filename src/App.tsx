@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Board } from './BoardMapImage';
+import { Board } from './Board';
 
 class App extends Component {
   render() {
     return (
-      <Board />
+      <Board width={1003} height={588} />
     );
   }
 }
