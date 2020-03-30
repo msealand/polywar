@@ -6,6 +6,7 @@ export type Coordinate = { x: number, y: number };
 export type Territory = {
   id: string;
   name: string;
+
   colorIdx: number;
 
   position: Coordinate;
@@ -18,6 +19,10 @@ export type Territory = {
 
   fogged: boolean;
 };
+
+type IsTerritoryConnectionActiveCallback = (otherTerritory: Territory) => boolean;
+type IsTerritoryActiveCallback = () => boolean;
+type TerritoryClickHandler = () => void;
 
 const wrapDeltaWidth = (1003 * 0.5);
 const wrapDeltaHeight = (588 * 0.5);
@@ -59,7 +64,7 @@ export const TerritoryBorderComponent = (props: { territory: Territory }) => {
   );
 };
 
-export const TerritoryConnectionsComponent = (props: { territory: Territory }) => {
+export const TerritoryConnectionsComponent = (props: { territory: Territory, isActive?: IsTerritoryConnectionActiveCallback }) => {
   const territory = props.territory;
 
   const { strokeColor: territoryColor } = colorsForTerritory(territory);
@@ -81,9 +86,11 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
         else { otherPos.y -= (yDelta * 2.0) }
     }
 
+    const isActive = (props.isActive ? props.isActive(otherTerritory) : false);
+
     return <Line key={`${territory.id}-${otherTerritory.id}`}
       points={[ pos.x, pos.y, otherPos.x, otherPos.y ]}
-      strokeWidth={0.5}
+      strokeWidth={isActive ? 2.5 : 0.5}
       strokeLinearGradientStartPointX={pos.x}
       strokeLinearGradientStartPointY={pos.y}
       strokeLinearGradientEndPointX={otherPos.x}
@@ -99,15 +106,14 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory }) =
   );
 };
 
-type TerritoryClientHandler = () => void;
-
-export const TerritoryComponent = (props: { territory: Territory, isActive?: boolean, handleClick: TerritoryClientHandler }) => {
+export const TerritoryComponent = (props: { territory: Territory, isActive?: IsTerritoryActiveCallback, handleClick: TerritoryClickHandler }) => {
   const territory = props.territory;
+  const isActive = (props.isActive ? props.isActive() : false);
 
   let groupNode: any; // Can't seem to make "Group" work as a type here for some reason...
 
   const handleMouseEnter = () => {
-    if (props.isActive) {
+    if (isActive) {
       groupNode?.to({
         scaleX: 1.5,
         scaleY: 1.5,
@@ -117,7 +123,7 @@ export const TerritoryComponent = (props: { territory: Territory, isActive?: boo
   }
 
   const handleMouseLeave = () => {
-    if (props.isActive) {
+    if (isActive) {
       groupNode?.to({
         scaleX: 1.0,
         scaleY: 1.0,
@@ -128,7 +134,7 @@ export const TerritoryComponent = (props: { territory: Territory, isActive?: boo
 
   const units = territory.units ?? 0;
 
-  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory, props.isActive);
+  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory, isActive);
 
   return (
     <Group
@@ -142,7 +148,7 @@ export const TerritoryComponent = (props: { territory: Territory, isActive?: boo
       onMouseLeave={handleMouseLeave}
     >
       <Circle radius={9} fill={fillColor} />
-      <Circle radius={9} strokeWidth={props.isActive ? 2.5 : 0.5} stroke={strokeColor} />
+      <Circle radius={9} strokeWidth={isActive ? 2.5 : 0.5} stroke={strokeColor} />
       <Text 
         x={-(units < 10 ? 11.75 : 12)} // Being super picky here
         y={-11.5}

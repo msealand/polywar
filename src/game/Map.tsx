@@ -16,12 +16,14 @@ const MapImageComponent = (props: {
 };
 
 export const MapComponent = (props: any) => {
-  const { board, moves, isTerritoryActive }: { board: Board, moves: any, isTerritoryActive?: (territory: Territory) => boolean } = props;
+  const { board, isTerritoryActive }: { board: Board, isTerritoryActive?: (territory: Territory) => boolean, handleTerritoryClick?: (territory: Territory) => void } = props;
 
   const territoryComponents = board.territories.map((territory) => {
-    const isActive = (isTerritoryActive ? isTerritoryActive(territory) : false);
-    return <TerritoryComponent key={territory.id} territory={territory} isActive={isActive} handleClick={() => {
-      moves.deployUnits(territory.id, 1);
+    return <TerritoryComponent key={territory.id} territory={territory} isActive={() => {
+      if (props.isTerritoryActive) return props.isTerritoryActive(territory);
+      else return false;
+    }} handleClick={() => {
+      if (props.handleTerritoryClick) props.handleTerritoryClick(territory);
     }} />
   })
   
@@ -30,7 +32,15 @@ export const MapComponent = (props: any) => {
   })
 
   const territoryConnectionsComponents = board.territories.map((territory) => {
-    return <TerritoryConnectionsComponent key={territory.id} territory={territory} />
+    return <TerritoryConnectionsComponent key={territory.id} territory={territory} isActive={
+      (otherTerritory) => {
+        // if (isTerritoryActive) {
+        //   return isTerritoryActive(territory) && isTerritoryActive(otherTerritory);
+        // } else {
+          return false;
+        // }
+      }
+    } />
   })
 
   return (

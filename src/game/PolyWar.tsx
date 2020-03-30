@@ -1,6 +1,6 @@
 import { PluginPlayer } from 'boardgame.io/plugins';
 
-import { deployUnits, completeDeploymentPhase, completeAttackPhase, completeTransferPhase } from './Moves';
+import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
 
 
 export const PolyWar = {
@@ -14,11 +14,12 @@ export const PolyWar = {
         if (r >= 0.66) {
           t.controlledBy = "1"
           t.colorIdx = 2;
+          t.units = 3;
         } else if (r >= 0.33) {
           t.controlledBy = "0"
           t.colorIdx = 1;
+          t.units = 3;
         }
-        t.units = 3;
       });
   
       return { boardData: boardData }
@@ -36,17 +37,22 @@ export const PolyWar = {
                 moves: {
                     deployUnits,
                     completeDeploymentPhase
-                },
-                next: 'attack'
+                }
             },
             attack: {
                 moves: {
+                    attack,
                     completeAttackPhase
-                },
-                next: 'transfer'
+                }
+            },
+            postAttackTransfer: {
+                moves: {
+                    postAttackTransfer
+                }
             },
             transfer: {
                 moves: {
+                    transfer,
                     completeTransferPhase
                 }
             }

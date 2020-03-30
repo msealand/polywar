@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Territory } from './Territory';
 import { MapComponent } from './Map';
 
@@ -22,8 +22,21 @@ const AttackToolsComponent = (props: any) => {
   return (
     <div>
       <button onClick={() => {
+        props.moves.attack();
+      }}>Attack</button>
+      <button onClick={() => {
         props.moves.completeAttackPhase();
-      }}>Complete Attacks</button>
+      }}>Finished Attacking</button>
+    </div>
+  )
+}
+
+const PostAttackTransferToolsComponent = (props: any) => {
+  return (
+    <div>
+      <button onClick={() => {
+        props.moves.postAttackTransfer();
+      }}>Transfer</button>
     </div>
   )
 }
@@ -33,24 +46,53 @@ const TransferToolsComponent = (props: any) => {
     <div>
       <button onClick={() => {
         props.moves.completeTransferPhase();
-      }}>Complete Transfers</button>
+      }}>Finished Transfers</button>
     </div>
   )
+}
+
+type BoardState = {
+  attacker: string | undefined;
+  defender: string | undefined;
 }
 
 export const BoardComponent = (props: any) => {
   const board = loadBoard(props.G, props.ctx);
   const stage = props.ctx.activePlayers[props.playerID];
 
+  const [ boardState, setBoardState ] = useState<BoardState>({ attacker: undefined, defender: undefined });
+
   let tools;
   let isTerritoryActive: ((territory: Territory) => boolean) | undefined = undefined;
+  let handleTerritoryClick: ((territory: Territory) => void) | undefined = undefined;
   if (stage === 'deploy') {
     tools = <DeploymentToolsComponent moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
-      return (territory.controlledBy === props.playerID)
+      return (((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === props.playerID));
+    }
+    handleTerritoryClick = (territory: Territory) => {
+      props.moves.deployUnits(territory.id, 1);
     }
   } else if (stage === 'attack') {
     tools = <AttackToolsComponent moves={props.moves} />
+    if (boardState.attacker) {
+      isTerritoryActive = (territory: Territory) => {
+        const doesBorder = territory.borderingTerritories.some((t) => t.id === boardState.attacker);
+        return (doesBorder && ((territory.units ?? 0) > 0) && (territory.controlledBy !== props.playerID)) || (territory.id === boardState.attacker)
+      }
+      handleTerritoryClick = (territory: Territory) => {
+        setBoardState({ attacker: undefined, defender: undefined });
+      }
+    } else {
+      isTerritoryActive = (territory: Territory) => {
+        return (territory.controlledBy === props.playerID) && ((territory.units ?? 0) > 0) && territory.borderingTerritories.some((t) => ((t.units ?? 0) > 0) && (t.controlledBy !== props.playerID));
+      }
+      handleTerritoryClick = (territory: Territory) => {
+        setBoardState({ attacker: territory.id, defender: undefined });
+      }
+    }
+  } else if (stage === 'postAttackTransfer') {
+    tools = <PostAttackTransferToolsComponent moves={props.moves} />
   } else if (stage === 'transfer') {
     tools = <TransferToolsComponent moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
@@ -70,7 +112,7 @@ export const BoardComponent = (props: any) => {
       <div className="row align-items-center">
           <div className="col d-flex justify-content-center">
               <div className="map">
-                  <MapComponent board={board} moves={props.moves} isTerritoryActive={isTerritoryActive} />
+                  <MapComponent board={board} isTerritoryActive={isTerritoryActive} handleTerritoryClick={handleTerritoryClick} />
               </div>
           </div>
       </div>
