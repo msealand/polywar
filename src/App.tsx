@@ -1,10 +1,12 @@
 import React from 'react'
-import { PolyWarClient } from './game/PolyWarClient';
+// import { PolyWarClient } from './game/PolyWarClient';
+import { LobbyComponent } from './Lobby'
 
 const App = () => (
   <div>
-    <PolyWarClient playerID="0" />
-    <PolyWarClient playerID="1" />
+    <LobbyComponent />
+    {/* <PolyWarClient playerID="0" />
+    <PolyWarClient playerID="1" /> */}
     {/* <PolyWarClient playerID="2" />
     <PolyWarClient playerID="3" />
     <PolyWarClient playerID="4" />

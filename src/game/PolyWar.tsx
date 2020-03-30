@@ -5,6 +5,8 @@ import { Ctx } from 'boardgame.io';
 
 
 export const PolyWar = {
+    name: "poly-war",
+
     plugins: [PluginPlayer],
 
     setup: (ctx: Ctx) => {
