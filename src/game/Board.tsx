@@ -57,7 +57,7 @@ type BoardState = {
 }
 
 export const BoardComponent = (props: any) => {
-  const board = loadBoard(props.G, props.ctx);
+  const board = loadBoard(props.G, props.playerID);
   const stage = props.ctx.activePlayers[props.playerID];
 
   const [ boardState, setBoardState ] = useState<BoardState>({ attacker: undefined, defender: undefined });
@@ -68,7 +68,7 @@ export const BoardComponent = (props: any) => {
   if (stage === 'deploy') {
     tools = <DeploymentToolsComponent moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
-      return (((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === props.playerID));
+      return (territory.controlledBy === props.playerID); //(((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === props.playerID));
     }
     handleTerritoryClick = (territory: Territory) => {
       props.moves.deployUnits(territory.id, 1);
