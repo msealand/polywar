@@ -28,8 +28,33 @@ export const completeDeploymentPhase = {
 }
 
 export const attack = {
-    move: (G: any, ctx: Ctx, territoryId: string) => {
-        const territory: Territory = G.boardData.territories.find((t: Territory) => t.id === territoryId);
+    move: (G: any, ctx: Ctx, attackingTerritoryId: string, defendingTerritoryId: string) => {
+        const attackingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === attackingTerritoryId);
+        const defendingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === defendingTerritoryId);
+
+        const random = ctx.random!;
+        const attackRoles = random.D6(Math.min(attackingTerritory.units, 3));
+        const defendRoles = random.D6(Math.min(defendingTerritory.units, 2));
+
+
+        const defendingLosses = defendRoles.reduce((losses, roll) => {
+            if (attackRoles.some((ar) => ar > roll)) losses++;
+            return losses;
+        }, 0);
+
+        const attackingLosses = attackRoles.reduce((losses, roll) => {
+            if (defendRoles.some((dr) => dr > roll)) losses++;
+            return losses;
+        }, 0);
+
+        // const attackingLosses = Math.min(defendRoles.filter((dr) => !attackRoles.some((ar) => ar >= dr)).length, attackRoles.length);
+        // const defendingLosses = Math.min(attackRoles.filter((ar) => !defendRoles.some((dr) => dr >= ar)).length, defendRoles.length);
+
+        console.log(attackRoles, defendRoles, attackingLosses, defendingLosses);
+
+        attackingTerritory.units = attackingTerritory.units - attackingLosses;
+        defendingTerritory.units = defendingTerritory.units - defendingLosses;
+
         if (ctx.events?.setStage) {
             ctx.events.setStage('postAttackTransfer');
         }

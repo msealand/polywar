@@ -19,14 +19,20 @@ const DeploymentToolsComponent = (props: any) => {
 }
 
 const AttackToolsComponent = (props: any) => {
+  let attackButton;
+  if (props.attacker && props.defender) {
+    attackButton = <button onClick={() => {
+      props.moves.attack(props.attacker, props.defender);
+    }}>Attack</button>
+  } else {
+    attackButton = <button onClick={() => {
+      props.moves.completeAttackPhase();
+    }}>Finished Attacking</button>
+  }
+
   return (
     <div>
-      <button onClick={() => {
-        props.moves.attack();
-      }}>Attack</button>
-      <button onClick={() => {
-        props.moves.completeAttackPhase();
-      }}>Finished Attacking</button>
+      {attackButton}
     </div>
   )
 }
@@ -74,11 +80,18 @@ export const BoardComponent = (props: any) => {
       props.moves.deployUnits(territory.id, 1);
     }
   } else if (stage === 'attack') {
-    tools = <AttackToolsComponent moves={props.moves} />
-    if (boardState.attacker) {
+    tools = <AttackToolsComponent moves={props.moves} attacker={boardState.attacker} defender={boardState.defender} />
+    if (boardState.attacker && !boardState.defender) {
       isTerritoryActive = (territory: Territory) => {
         const doesBorder = territory.borderingTerritories.some((t) => t.id === boardState.attacker);
         return (doesBorder && ((territory.units ?? 0) > 0) && (territory.controlledBy !== props.playerID)) || (territory.id === boardState.attacker)
+      }
+      handleTerritoryClick = (territory: Territory) => {
+        setBoardState({ attacker: boardState.attacker, defender: territory.id });
+      }
+    } else if (boardState.attacker && boardState.defender) {
+      isTerritoryActive = (territory: Territory) => {
+        return (territory.id === boardState.defender) || (territory.id === boardState.attacker)
       }
       handleTerritoryClick = (territory: Territory) => {
         setBoardState({ attacker: undefined, defender: undefined });
