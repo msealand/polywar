@@ -1,8 +1,7 @@
+import { Ctx } from 'boardgame.io';
 import { PluginPlayer } from 'boardgame.io/plugins';
 
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
-import { Ctx } from 'boardgame.io';
-
 
 export const PolyWar = {
     name: "poly-war",

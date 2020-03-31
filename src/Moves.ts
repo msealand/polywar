@@ -32,31 +32,66 @@ export const attack = {
         const attackingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === attackingTerritoryId);
         const defendingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === defendingTerritoryId);
 
+        if (attackingTerritory.units <= 1) { console.log(`can't attack with a single unit`); return; }
+
+        const attackCount = Math.min(attackingTerritory.units - 1, 3);
+        const defendCount = Math.min(defendingTerritory.units, 2);
+
         const random = ctx.random!;
-        const attackRoles = random.D6(Math.min(attackingTerritory.units, 3));
-        const defendRoles = random.D6(Math.min(defendingTerritory.units, 2));
+        const attackRoles = random.D6(attackCount);
+        const defendRoles = random.D6(defendCount);
 
 
-        const defendingLosses = defendRoles.reduce((losses, roll) => {
-            if (attackRoles.some((ar) => ar > roll)) losses++;
-            return losses;
-        }, 0);
+        // <crazy warfish dice roll logic>
+        let ar = Array.from(attackRoles.sort().reverse());
+        let dr = Array.from(defendRoles.sort().reverse());
 
-        const attackingLosses = attackRoles.reduce((losses, roll) => {
-            if (defendRoles.some((dr) => dr > roll)) losses++;
-            return losses;
-        }, 0);
+        let al = 0;
+        let dl = 0;
+        while (ar.length && dr.length) {
+            const a = ar[0];
+            const d = dr[0];
 
-        // const attackingLosses = Math.min(defendRoles.filter((dr) => !attackRoles.some((ar) => ar >= dr)).length, attackRoles.length);
-        // const defendingLosses = Math.min(attackRoles.filter((ar) => !defendRoles.some((dr) => dr >= ar)).length, defendRoles.length);
+            if (a > d) {
+                dl++;
+                ar.shift();
+                dr.shift();
+            } else {
+                const aIdx = ar.findIndex((a) => d >= a);
+                if (aIdx >= 0) {
+                    al++;
+                    ar.splice(aIdx, 1);
+                    dr.shift();
+                } else {
+                    ar.shift();
+                    dr.shift();
+                }
+            }
+        }
+        // </crazy warfish dice roll logic>
+        
 
-        console.log(attackRoles, defendRoles, attackingLosses, defendingLosses);
+        const attackingLosses = al;
+        const defendingLosses = dl;
+
+        console.log(attackingTerritory.controlledBy, attackRoles, defendingTerritory.controlledBy, defendRoles, attackingLosses, defendingLosses);
 
         attackingTerritory.units = attackingTerritory.units - attackingLosses;
         defendingTerritory.units = defendingTerritory.units - defendingLosses;
 
-        if (ctx.events?.setStage) {
-            ctx.events.setStage('postAttackTransfer');
+        if (defendingTerritory.units === 0) {
+            defendingTerritory.units = attackCount - attackingLosses;
+            defendingTerritory.controlledBy = attackingTerritory.controlledBy;
+            attackingTerritory.units = attackingTerritory.units - defendingTerritory.units;
+
+            // It's kind of weird to set this here...
+            defendingTerritory.colorIdx = ctx.player?.get()?.colorIdx;
+
+            console.log(attackingTerritory.controlledBy, defendingTerritory.controlledBy);
+
+            if (ctx.events?.setStage) {
+                ctx.events.setStage('postAttackTransfer');
+            }
         }
     },
     undoable: true,
