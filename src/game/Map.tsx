@@ -2,7 +2,8 @@ import React from 'react';
 import { Stage, Layer, Image } from 'react-konva';
 import useImage from 'use-image';
 
-import { Territory, TerritoryComponent, TerritoryBorderComponent, TerritoryConnectionsComponent } from './Territory';
+import { Territory } from './proxy';
+import { TerritoryComponent, TerritoryBorderComponent, TerritoryConnectionsComponent } from './Territory';
 
 export type Board = {
   territories: Array<Territory>

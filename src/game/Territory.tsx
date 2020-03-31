@@ -1,24 +1,7 @@
 import React from 'react';
 import { Circle, Text, Line, Group } from 'react-konva';
 
-export type Coordinate = { x: number, y: number };
-
-export type Territory = {
-  id: string;
-  name: string;
-
-  colorIdx: number;
-
-  position: Coordinate;
-  border: Array<Coordinate>;
-
-  borderingTerritories: Array<Territory>;
-
-  units: number;
-  controlledBy: string;
-
-  fogged: boolean;
-};
+import { Territory } from './proxy'
 
 type IsTerritoryConnectionActiveCallback = (otherTerritory: Territory) => boolean;
 type IsTerritoryActiveCallback = () => boolean;

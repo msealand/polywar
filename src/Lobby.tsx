@@ -1,7 +1,7 @@
 import React from 'react';
 import { Lobby } from 'boardgame.io/react';
 
-import { PolyWar } from './game/PolyWar';
+import { PolyWar } from './game/proxy';
 import { PolyWarClient } from './game/PolyWarClient';
 
 export const LobbyComponent = () => {

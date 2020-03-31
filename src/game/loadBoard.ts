@@ -1,5 +1,5 @@
 import { Board } from './Map';
-import { Territory } from './Territory';
+import { Territory } from './proxy';
 import { Delaunay } from "d3-delaunay";
 import { Ctx } from 'boardgame.io';
 
