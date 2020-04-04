@@ -7,6 +7,8 @@ import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, compl
 
 export const PolyWar = {
     name: "poly-war",
+    minPlayers: 2,
+    maxPlayers: 10,
 
     plugins: [PluginPlayer],
 
