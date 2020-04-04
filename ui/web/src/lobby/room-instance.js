@@ -22,14 +22,20 @@ export class LobbyRoomInstance extends React.Component {
     onClickPlay: PropTypes.func.isRequired,
   };
 
-  _createSeat = player => {
-    return player.name || '[free]';
+  _createSeat = (gameId, player, idx) => {
+    return (
+      <li className="list-group-item" key={gameId + '-player-' + player.id}>
+        <p className="text-monospace mb-0">
+          Slot {idx + 1}: {player.name || '[free]'}
+        </p>
+      </li>
+    )
   };
 
   _createButtonJoin = (inst, seatId) => (
     <button
       key={'button-join-' + inst.gameID}
-      type="button" className="btn btn-success"
+      type="button" className="btn btn-sm btn-success ml-1"
       onClick={() =>
         this.props.onClickJoin(inst.gameName, inst.gameID, '' + seatId)
       }
@@ -41,7 +47,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonLeave = inst => (
     <button
       key={'button-leave-' + inst.gameID}
-      type="button" className="btn btn-danger"
+      type="button" className="btn btn-sm btn-danger ml-1"
       onClick={() => this.props.onClickLeave(inst.gameName, inst.gameID)}
     >
       Leave
@@ -51,7 +57,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonPlay = (inst, seatId) => (
     <button
       key={'button-play-' + inst.gameID}
-      type="button" className="btn btn-success"
+      type="button" className="btn btn-sm btn-success ml-1"
       onClick={() =>
         this.props.onClickPlay(inst.gameName, {
           gameID: inst.gameID,
@@ -67,6 +73,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonSpectate = inst => (
     <button
       key={'button-spectate-' + inst.gameID}
+      type="button" className="btn btn-sm ml-1"
       onClick={() =>
         this.props.onClickPlay(inst.gameName, {
           gameID: inst.gameID,
@@ -109,20 +116,26 @@ export class LobbyRoomInstance extends React.Component {
   render() {
     const room = this.props.room;
     let status = 'OPEN';
+
     if (!room.players.find(player => !player.name)) {
       status = 'RUNNING';
     }
+
     return (
-      <tr key={'line-' + room.gameID}>
-        <td key={'cell-name-' + room.gameID}>{room.gameName}</td>
-        <td key={'cell-status-' + room.gameID}>{status}</td>
-        <td key={'cell-seats-' + room.gameID}>
-          {room.players.map(this._createSeat).join(', ')}
-        </td>
-        <td key={'cell-buttons-' + room.gameID}>
-          {this._createInstanceButtons(room)}
-        </td>
-      </tr>
+      <div className="container">
+        <div className="row">
+          {/* <div className="col col-1">{status}</div>
+          <div className="col col-1">{room.gameName}</div> */}
+          <div className="col">
+            <ul className="list-group">
+              {room.players.map(this._createSeat.bind(this, room.gameID))}
+            </ul>
+          </div>
+          <div className="col col-3 text-right">
+            {this._createInstanceButtons(room)}
+          </div>
+        </div>
+      </div>
     );
   }
 }

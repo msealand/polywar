@@ -62,16 +62,18 @@ export class LobbyCreateRoomForm extends React.Component {
   render() {
     return (
       <div className="form-group">
-        <select
+        {/* <select
           className="custom-select"
           value={this.state.selectedGame}
           onChange={evt => this.onChangeSelectedGame(evt)}
         >
           {this.props.games.map(this._createGameNameOption)}
-        </select>
-        <span>Players:</span>
+        </select> */}
+
+        <h6 className="card-title">Number of Players</h6>
+
         <select
-          className="custom-select"
+          className="custom-select form-control form-control-sm mx-0"
           value={this.state.numPlayers}
           onChange={this.onChangeNumPlayers}
         >
@@ -79,9 +81,10 @@ export class LobbyCreateRoomForm extends React.Component {
             this.props.games[this.state.selectedGame].game
           ).map(this._createNumPlayersOption)}
         </select>
-        <span className="buttons">
+
+        <div className="mt-3">
           <button type="button" className="btn btn-success" onClick={this.onClickCreate}>Create</button>
-        </span>
+        </div>
       </div>
     );
   }

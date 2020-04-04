@@ -40,7 +40,7 @@ export class LobbyLoginForm extends React.Component {
 
           <div className="mt-3">
             <button type="button" className="btn btn-success" onClick={this.onClickEnter}>
-              Enter
+              Enter Lobby
             </button>
           </div>
 

@@ -24,14 +24,16 @@ const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeave
     return rooms.map(room => {
       const { gameID, gameName, players } = room;
       return (
-        <LobbyRoomInstance
-          key={'instance-' + gameID}
-          room={{ gameID, gameName, players: Object.values(players) }}
-          playerName={playerName}
-          onClickJoin={handleJoinRoom}
-          onClickLeave={handleLeaveRoom}
-          onClickPlay={handleStartGame}
-        />
+        <li className="list-group-item">
+          <LobbyRoomInstance
+            key={'instance-' + gameID}
+            room={{ gameID, gameName, players: Object.values(players) }}
+            playerName={playerName}
+            onClickJoin={handleJoinRoom}
+            onClickLeave={handleLeaveRoom}
+            onClickPlay={handleStartGame}
+          />
+        </li>
       );
     });
   };
@@ -48,35 +50,81 @@ const LobbyEnter = (props) => {
   )
 }
 
+const LobbyHeader = (props) => {
+  return (
+    <nav className="navbar">
+      <div className="navbar-brand">{props.playerName}</div>
+
+      <form className="form-inline">
+        <button type="button" className="btn btn-outline-danger my-2 my-sm-0" onClick={props.handleExitLobby}>Exit lobby</button>
+      </form>
+    </nav>
+  )
+}
+
+const GameHeader = (props) => {
+  return (
+    <nav className="navbar">
+      <div className="navbar-brand">{props.playerName}</div>
+
+      <form className="form-inline">
+        <button type="button" className="btn btn-outline-danger my-2 my-sm-0" onClick={props.handleExitRoom}>Exit game</button>
+      </form>
+    </nav>
+  )
+}
+
 const LobbyList = (props) => {
   return (
     <div className="lobby-list">
-      <p>Welcome, {props.playerName}</p>
+      {LobbyHeader(props)}
 
-      <div className="phase-title" id="game-creation">
-        <span>Create a room:</span>
-        <LobbyCreateRoomForm
-          games={props.gameComponents}
-          createGame={props.handleCreateRoom}
-        />
-      </div>
-      <p className="phase-title">Join a room:</p>
-      <div id="instances">
-        <table>
-          <tbody>
-            {renderRooms(props.rooms, props.playerName, props.handleJoinRoom, props.handleLeaveRoom, props.handleStartGame)}
-          </tbody>
-        </table>
-        <span className="error-msg">
-          {props.errorMsg}
-          <br />
-        </span>
-      </div>
-      <p className="phase-title">
-        Rooms that become empty are automatically deleted.
-      </p>
-      <div className="buttons" id="lobby-exit">
-        <button type="button" className="btn btn-danger" onClick={props.handleExitLobby}>Exit lobby</button>
+      <div className="container">
+        <div className="row">
+
+          <div className="col col-3">
+            <div className="card">
+              <div className="card-header">
+                <h5 className="mb-0">Create a room</h5>
+              </div>
+              <div className="card-body">
+                <LobbyCreateRoomForm
+                  games={props.gameComponents}
+                  createGame={props.handleCreateRoom}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="col">
+            <div className="card">
+              <div className="card-header">
+                <h5 className="mb-0">Join a room</h5>
+              </div>
+              {/* <div className="card-body"> */}
+                <ul className="list-group list-group-flush">
+                {/* <div id="instances">
+                  <table>
+                    <tbody> */}
+                      {renderRooms(props.rooms, props.playerName, props.handleJoinRoom, props.handleLeaveRoom, props.handleStartGame)}
+                    {/* </tbody>
+                  </table>
+                  <span className="error-msg">
+                    {props.errorMsg}
+                    <br />
+                  </span>
+                </div> */}
+                </ul>
+              {/* </div> */}
+              <div className="card-footer">
+                <p className="text-muted text-center mb-0">
+                    Rooms that become empty are automatically deleted.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   )
@@ -85,6 +133,8 @@ const LobbyList = (props) => {
 const LobbyPlay = (props) => {
   return (
     <div className="lobby-play">
+      {GameHeader(props)}
+
       {props.runningGame && (
         <props.runningGame.app
           gameID={props.runningGame.gameID}
@@ -92,9 +142,6 @@ const LobbyPlay = (props) => {
           credentials={props.runningGame.credentials}
         />
       )}
-      <div className="buttons" id="game-exit">
-        <button type="button" className="btn btn-warning" onClick={props.handleExitRoom}>Exit game</button>
-      </div>
     </div>
   )
 }
