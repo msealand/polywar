@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Territory } from './proxy';
+import { Territory } from 'polywar';
 import { MapComponent } from './Map';
 
 import { loadBoard } from './loadBoard';

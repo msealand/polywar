@@ -1,7 +1,6 @@
 import { Board } from './Map';
-import { Territory } from './proxy';
+import { Territory } from 'polywar';
 import { Delaunay } from "d3-delaunay";
-import { Ctx } from 'boardgame.io';
 
 export function loadBoard(G: any, playerID: string): Board {
   const boardData = G.boardData;

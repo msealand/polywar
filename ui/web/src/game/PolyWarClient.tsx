@@ -1,5 +1,5 @@
 import { BoardComponent } from './Board';
-import { PolyWar } from './proxy';
+import { PolyWar } from 'polywar';
 
 import { Client } from 'boardgame.io/react';
 import { Local, SocketIO } from 'boardgame.io/multiplayer'

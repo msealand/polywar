@@ -1,4 +1,4 @@
-import { PolyWar } from './PolyWar'
+import { PolyWar } from 'polywar'
 
 const Server = require('boardgame.io/server').Server;
 

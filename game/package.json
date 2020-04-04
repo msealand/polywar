@@ -1,15 +1,13 @@
 {
-  "name": "polywar-server",
+  "name": "polywar",
   "version": "1.0.0",
   "main": "src/index.ts",
   "author": "Me",
   "license": "MIT",
   "dependencies": {
-    "boardgame.io": "^0.39.4",
-    "polywar": "../game"
+    "boardgame.io": "^0.39.4"
   },
   "devDependencies": {
-    "@types/node": "^13.11.0",
     "ts-node": "^8.8.1",
     "typescript": "^3.8.3"
   },

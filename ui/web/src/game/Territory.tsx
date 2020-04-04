@@ -1,7 +1,7 @@
 import React from 'react';
 import { Circle, Text, Line, Group } from 'react-konva';
 
-import { Territory } from './proxy'
+import { Territory } from 'polywar'
 
 type IsTerritoryConnectionActiveCallback = (otherTerritory: Territory) => boolean;
 type IsTerritoryActiveCallback = () => boolean;
