@@ -25,25 +25,26 @@ export class LobbyLoginForm extends React.Component {
 
   render() {
     return (
-      <div>
-        <p className="phase-title">Choose a player name:</p>
-        <input
-          className="form-control"
-          type="text"
-          value={this.state.playerName}
-          onChange={this.onChangePlayerName}
-          onKeyPress={this.onKeyPress}
-        />
-        <span className="buttons">
-          <button type="button" className="btn btn-success" onClick={this.onClickEnter}>
-            Enter
-          </button>
-        </span>
-        <br />
-        <span className="error-msg">
-          {this.state.nameErrorMsg}
-          <br />
-        </span>
+      <div className="lobby-login card w-25 mx-auto ">
+        <div className="card-body">
+          <h6 className="card-title">Player Name</h6>
+
+          <input
+            id="player-name"
+            className="form-control"
+            type="text"
+            value={this.state.playerName}
+            onChange={this.onChangePlayerName}
+            onKeyPress={this.onKeyPress}
+          />
+
+          <div className="mt-3">
+            <button type="button" className="btn btn-success" onClick={this.onClickEnter}>
+              Enter
+            </button>
+          </div>
+
+        </div>
       </div>
     );
   }
