@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Lobby } from './lobby/react';
 import { Lobby } from 'boardgame.io/react';
 
 import { PolyWar } from 'polywar';
@@ -15,7 +14,13 @@ const LobbyPhases = {
   LIST: 'list',
 };
 
-const renderRooms = (rooms, playerName, handleJoinRoom, handleLeaveRoom, handleStartGame) => {
+type Room = {
+  gameID: string, 
+  gameName: string, 
+  players: any
+}
+
+const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeaveRoom, handleStartGame) => {
     return rooms.map(room => {
       const { gameID, gameName, players } = room;
       return (
@@ -102,25 +107,22 @@ const renderLobbyPhase = (props) => {
   }
 }
 
-function renderLobby(props) {
-    /*
-    {
-        errorMsg,
-        gameComponents,
-        rooms: this.connection.rooms,
-        phase,
-        playerName,
-        runningGame,
-        handleEnterLobby: this._enterLobby,
-        handleExitLobby: this._exitLobby,
-        handleCreateRoom: this._createRoom,
-        handleJoinRoom: this._joinRoom,
-        handleLeaveRoom: this._leaveRoom,
-        handleExitRoom: this._exitRoom,
-        handleRefreshRooms: this._updateConnection,
-        handleStartGame: this._startGame,
-    }
-    */
+function renderLobby(props: {
+  errorMsg: string,
+  gameComponents: Array<any>, // Game objects
+  rooms: Array<Room>,
+  phase: string,
+  playerName: string,
+  runningGame: any,
+  handleEnterLobby: Function,
+  handleExitLobby: Function,
+  handleCreateRoom: Function,
+  handleJoinRoom: Function,
+  handleLeaveRoom: Function,
+  handleExitRoom: Function,
+  handleRefreshRooms: Function,
+  handleStartGame: Function,
+}) {
     return (
       <div id="lobby-view" style={{ padding: 50 }}>
         {renderLobbyPhase(props)}
