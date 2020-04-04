@@ -1,5 +1,7 @@
 import { Ctx } from 'boardgame.io';
 import { PluginPlayer } from 'boardgame.io/plugins';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
 
@@ -9,7 +11,8 @@ export const PolyWar = {
     plugins: [PluginPlayer],
 
     setup: (ctx: Ctx) => {
-        const boardData = require('./map.json');
+        // const boardData = require('./map.json');
+        const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
         const random = ctx.random!;
         for (let initialUnitDeployment = 1; initialUnitDeployment <= 3; initialUnitDeployment++) {

@@ -1,7 +1,7 @@
 {
   "name": "polywar",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "gen/index.js",
   "author": "Me",
   "license": "MIT",
   "dependencies": {
