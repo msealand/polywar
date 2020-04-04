@@ -12,6 +12,7 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "start": "./node_modules/.bin/ts-node src/index.ts"
+    "start": "./node_modules/.bin/ts-node src/index.ts",
+    "build": "./node_modules/.bin/tsc && cp src/map.json gen/"
   }
 }
