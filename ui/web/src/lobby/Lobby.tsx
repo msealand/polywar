@@ -3,11 +3,11 @@ import React from 'react';
 import { Lobby } from 'boardgame.io/react';
 
 import { PolyWar } from 'polywar';
-import { PolyWarClient } from './game/PolyWarClient';
+import { PolyWarClient } from '../game/PolyWarClient';
 
-import { LobbyLoginForm } from './lobby/login-form';
-import { LobbyCreateRoomForm } from './lobby/create-room-form';
-import { LobbyRoomInstance } from './lobby/room-instance';
+import { LobbyLoginForm } from './login-form';
+import { LobbyCreateRoomForm } from './create-room-form';
+import { LobbyRoomInstance } from './room-instance';
 
 const LobbyPhases = {
     ENTER: 'enter',

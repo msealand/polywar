@@ -1,6 +1,6 @@
 import React from 'react'
 // import { PolyWarClient } from './game/PolyWarClient';
-import { LobbyComponent } from './Lobby'
+import { LobbyComponent } from './lobby/Lobby'
 
 const App = () => (
   <div>
