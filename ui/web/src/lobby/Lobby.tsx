@@ -79,7 +79,7 @@ function renderLobby(props) {
             <div id="instances">
               <table>
                 <tbody>
-                  {renderRooms(props.rooms, props.playerName, props.handleJoinRoomm, props.handleLeaveRoom, props.handleStartGame)}
+                  {renderRooms(props.rooms, props.playerName, props.handleJoinRoom, props.handleLeaveRoom, props.handleStartGame)}
                 </tbody>
               </table>
               <span className="error-msg">
