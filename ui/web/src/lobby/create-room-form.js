@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class LobbyCreateRoomForm extends React.Component {
+export class LobbyCreateRoomForm extends React.Component {
   static propTypes = {
     games: PropTypes.array.isRequired,
     createGame: PropTypes.func.isRequired,

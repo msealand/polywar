@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class LobbyRoomInstance extends React.Component {
+export class LobbyRoomInstance extends React.Component {
   static propTypes = {
     room: PropTypes.shape({
       gameName: PropTypes.string.isRequired,

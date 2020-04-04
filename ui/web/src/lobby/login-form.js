@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class LobbyLoginForm extends React.Component {
+export class LobbyLoginForm extends React.Component {
   static propTypes = {
     playerName: PropTypes.string,
     onEnter: PropTypes.func.isRequired,
