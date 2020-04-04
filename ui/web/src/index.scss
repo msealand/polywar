@@ -6,6 +6,7 @@ $body-bg: #393939;
 
 html, body {
     height: 100%;
+    color: #fff;
 }
 
 #root {
@@ -38,4 +39,9 @@ body {
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+select {
+    margin-left: 8px;
+    margin-right: 8px;
 }
