@@ -32,17 +32,22 @@ export class LobbyRoomInstance extends React.Component {
     )
   };
 
-  _createButtonJoin = (inst, seatId) => (
-    <button
-      key={'button-join-' + inst.gameID}
-      type="button" className="btn btn-sm btn-success ml-1"
-      onClick={() =>
-        this.props.onClickJoin(inst.gameName, inst.gameID, '' + seatId)
-      }
-    >
-      Join
-    </button>
-  );
+  _createButtonJoin = (inst, seatId) => {
+    const disabled = this.props.isInGame;
+
+    return (
+      <button
+        key={'button-join-' + inst.gameID}
+        type="button" className="btn btn-sm btn-success ml-1"
+        onClick={() =>
+          this.props.onClickJoin(inst.gameName, inst.gameID, '' + seatId)
+        }
+        disabled={disabled}
+      >
+        Join
+      </button>
+    )
+  };
 
   _createButtonLeave = inst => (
     <button

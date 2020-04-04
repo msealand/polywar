@@ -21,6 +21,10 @@ type Room = {
 }
 
 const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeaveRoom, handleStartGame) => {
+    const isInGame = rooms.some((room) => 
+      room.players.find(p => p.name == playerName)
+    )
+
     return rooms.map(room => {
       const { gameID, gameName, players } = room;
       return (
@@ -29,6 +33,7 @@ const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeave
             key={'instance-' + gameID}
             room={{ gameID, gameName, players: Object.values(players) }}
             playerName={playerName}
+            isInGame={isInGame}
             onClickJoin={handleJoinRoom}
             onClickLeave={handleLeaveRoom}
             onClickPlay={handleStartGame}
