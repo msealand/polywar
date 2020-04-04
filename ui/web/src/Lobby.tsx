@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lobby } from 'boardgame.io/react';
+import { Lobby } from './lobby/react';
 
 import { PolyWar } from 'polywar';
 import { PolyWarClient } from './game/PolyWarClient';
