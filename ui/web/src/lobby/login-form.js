@@ -28,13 +28,14 @@ export class LobbyLoginForm extends React.Component {
       <div>
         <p className="phase-title">Choose a player name:</p>
         <input
+          className="form-control"
           type="text"
           value={this.state.playerName}
           onChange={this.onChangePlayerName}
           onKeyPress={this.onKeyPress}
         />
         <span className="buttons">
-          <button className="buttons" onClick={this.onClickEnter}>
+          <button type="button" className="btn btn-success" onClick={this.onClickEnter}>
             Enter
           </button>
         </span>

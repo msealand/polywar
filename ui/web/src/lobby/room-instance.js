@@ -29,6 +29,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonJoin = (inst, seatId) => (
     <button
       key={'button-join-' + inst.gameID}
+      type="button" className="btn btn-success"
       onClick={() =>
         this.props.onClickJoin(inst.gameName, inst.gameID, '' + seatId)
       }
@@ -40,6 +41,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonLeave = inst => (
     <button
       key={'button-leave-' + inst.gameID}
+      type="button" className="btn btn-danger"
       onClick={() => this.props.onClickLeave(inst.gameName, inst.gameID)}
     >
       Leave
@@ -49,6 +51,7 @@ export class LobbyRoomInstance extends React.Component {
   _createButtonPlay = (inst, seatId) => (
     <button
       key={'button-play-' + inst.gameID}
+      type="button" className="btn btn-success"
       onClick={() =>
         this.props.onClickPlay(inst.gameName, {
           gameID: inst.gameID,

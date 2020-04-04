@@ -61,8 +61,9 @@ export class LobbyCreateRoomForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="form-group">
         <select
+          className="custom-select"
           value={this.state.selectedGame}
           onChange={evt => this.onChangeSelectedGame(evt)}
         >
@@ -70,6 +71,7 @@ export class LobbyCreateRoomForm extends React.Component {
         </select>
         <span>Players:</span>
         <select
+          className="custom-select"
           value={this.state.numPlayers}
           onChange={this.onChangeNumPlayers}
         >
@@ -78,7 +80,7 @@ export class LobbyCreateRoomForm extends React.Component {
           ).map(this._createNumPlayersOption)}
         </select>
         <span className="buttons">
-          <button onClick={this.onClickCreate}>Create</button>
+          <button type="button" className="btn btn-success" onClick={this.onClickCreate}>Create</button>
         </span>
       </div>
     );

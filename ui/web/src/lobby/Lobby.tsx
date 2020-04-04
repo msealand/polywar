@@ -101,12 +101,12 @@ function renderLobby(props) {
               />
             )}
             <div className="buttons" id="game-exit">
-              <button onClick={props.handleExitRoom}>Exit game</button>
+              <button type="button" className="btn btn-warning" onClick={props.handleExitRoom}>Exit game</button>
             </div>
           </div>
   
           <div className="buttons" id="lobby-exit">
-            <button onClick={props.handleExitLobby}>Exit lobby</button>
+            <button type="button" className="btn btn-danger" onClick={props.handleExitLobby}>Exit lobby</button>
           </div>
         </div>
       )
