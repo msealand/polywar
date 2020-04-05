@@ -4,9 +4,9 @@ import { Lobby, Client } from 'boardgame.io/react';
 import { PolyWar } from 'polywar';
 import { PolyWarClient } from '../game/PolyWarClient';
 
-import { LobbyRoomInstance } from './room-instance';
 import { LobbyLoginContainer } from './LobbyLogin';
 import { CreateRoomContainer } from './CreateRoom';
+import { Room } from './Room';
 
 enum LobbyPhases {
   ENTER = 'enter',
@@ -53,14 +53,14 @@ const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeave
     const { gameID, gameName, players } = room;
     return (
       <li key={'instance-' + gameID + '-item'} className="list-group-item">
-        <LobbyRoomInstance
+        <Room
           key={'instance-' + gameID}
           room={{ gameID, gameName, players: Object.values(players) }}
           playerName={playerName}
           isInGame={isInGame}
-          onClickJoin={handleJoinRoom}
-          onClickLeave={handleLeaveRoom}
-          onClickPlay={handleStartGame}
+          handleJoin={handleJoinRoom}
+          handleLeave={handleLeaveRoom}
+          handlePlay={handleStartGame}
         />
       </li>
     );
