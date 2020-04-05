@@ -83,19 +83,22 @@ const TransferToolsComponent = (props: any) => {
 }
 
 type BoardState = {
-  attacker: string | undefined;
-  defender: string | undefined;
+  attacker?: string;
+  defender?: string;
+
+  hoverTerritory?: Territory;
 }
 
 export const BoardComponent = (props: any) => {
   const board = loadBoard(props.G, props.playerID);
   const stage = props.ctx.activePlayers[props.playerID];
 
-  const [ boardState, setBoardState ] = useState<BoardState>({ attacker: undefined, defender: undefined });
+  const [ boardState, setBoardState ] = useState<BoardState>({});
 
   let tools;
   let isTerritoryActive: ((territory: Territory) => boolean) | undefined = undefined;
   let handleTerritoryClick: ((territory: Territory) => void) | undefined = undefined;
+
   if (stage === 'deploy') {
     tools = <DeploymentToolsComponent moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
@@ -144,6 +147,26 @@ export const BoardComponent = (props: any) => {
     )
   }
 
+  const territoryState = () => {
+    const t = boardState.hoverTerritory;
+    if (t) {
+      return (
+
+        <div className="card">
+          <div className="card-header">
+            <h5 className="text-center mb-0">{t.name}</h5>
+          </div>
+          <div className="card-body">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item">{t.units} Units</li>
+              <li className="list-group-item">Controlled By: {t.controllerBy}</li>
+            </ul>
+          </div>
+        </div>
+      );
+    }
+  }
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -156,15 +179,21 @@ export const BoardComponent = (props: any) => {
         </div>
 
         <div className="col">
-            <MapComponent board={board} isTerritoryActive={isTerritoryActive} handleTerritoryClick={handleTerritoryClick} />
+            <MapComponent 
+              board={board} 
+              isTerritoryActive={isTerritoryActive} 
+              handleTerritoryClick={handleTerritoryClick}
+              handleTerritoryEntry={(territory: Territory) => {
+                boardState.hoverTerritory = territory;
+              }}
+              handleTerritoryExit={() => {
+                boardState.hoverTerritory = undefined;
+              }}
+            />
         </div>
 
         <div className="col">
-          <div className="card">
-            <div className="card-body">
-              Something...
-            </div>
-          </div>
+          {territoryState()}
         </div>
       </div>
     </div>

@@ -16,8 +16,14 @@ const MapImageComponent = (props: {
   return <Image image={image} />;
 };
 
-export const MapComponent = (props: any) => {
-  const { board, isTerritoryActive }: { board: Board, isTerritoryActive?: (territory: Territory) => boolean, handleTerritoryClick?: (territory: Territory) => void } = props;
+export const MapComponent = (props: { 
+  board: Board, 
+  isTerritoryActive?: (territory: Territory) => boolean, 
+  handleTerritoryClick?: (territory: Territory) => void,
+  handleTerritoryEntry?: (territory: Territory) => void,
+  handleTerritoryExit?: (territory: Territory) => void
+}) => {
+  const { board } = props;
 
   const territoryComponents = board.territories.map((territory) => {
     return <TerritoryComponent key={territory.id} territory={territory} isActive={() => {
@@ -25,6 +31,10 @@ export const MapComponent = (props: any) => {
       else return false;
     }} handleClick={() => {
       if (props.handleTerritoryClick) props.handleTerritoryClick(territory);
+    }} handleEntry={() => {
+      if (props.handleTerritoryEntry) props.handleTerritoryEntry(territory);
+    }} handleExit={() => {
+      if (props.handleTerritoryExit) props.handleTerritoryExit(territory);
     }} />
   })
   

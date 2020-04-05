@@ -12,10 +12,10 @@ const wrapDeltaHeight = (588 * 0.5);
 
 function colorsForTerritory(territory: Territory, isActive: boolean = true) {
   if (territory.fogged) {
-    const fog = 'hsla(0, 0%, 25%, 0)';
+    const fog = 'hsla(0, 0%, 10%, 1.0)';
     return {
       fillColor: fog,
-      strokeColor: fog,
+      strokeColor: 'hsla(0, 0%, 40%, 1.0)',
       textColor: fog
     }
   } else {
@@ -89,35 +89,50 @@ export const TerritoryConnectionsComponent = (props: { territory: Territory, isA
   );
 };
 
-export const TerritoryComponent = (props: { territory: Territory, isActive?: IsTerritoryActiveCallback, handleClick: TerritoryClickHandler }) => {
+export const TerritoryComponent = (props: { 
+  territory: Territory, 
+  isActive?: IsTerritoryActiveCallback, 
+  handleClick: TerritoryClickHandler, 
+  handleEntry?: TerritoryClickHandler, 
+  handleExit?: TerritoryClickHandler 
+}) => {
   const territory = props.territory;
   const isActive = (props.isActive ? props.isActive() : false);
 
   let groupNode: any; // Can't seem to make "Group" work as a type here for some reason...
 
   const handleMouseEnter = () => {
-    if (isActive) {
+    // if (isActive) {
       groupNode?.to({
         scaleX: 1.5,
         scaleY: 1.5,
         duration: 0.2
       });
+    // }
+
+    if (props.handleEntry) {
+      props.handleEntry();
     }
   }
 
   const handleMouseLeave = () => {
-    if (isActive) {
+    // if (isActive) {
       groupNode?.to({
         scaleX: 1.0,
         scaleY: 1.0,
         duration: 0.2
       });
+    // }
+
+    if (props.handleExit) {
+      props.handleExit();
     }
   }
 
   const units = territory.units ?? 0;
 
   const { fillColor, strokeColor, textColor } = colorsForTerritory(territory, isActive);
+  const strokeWidth = (isActive ? 2.5 : 0.5)
 
   return (
     <Group
@@ -131,7 +146,7 @@ export const TerritoryComponent = (props: { territory: Territory, isActive?: IsT
       onMouseLeave={handleMouseLeave}
     >
       <Circle radius={9} fill={fillColor} />
-      <Circle radius={9} strokeWidth={isActive ? 2.5 : 0.5} stroke={strokeColor} />
+      <Circle radius={9} strokeWidth={strokeWidth} stroke={strokeColor} />
       <Text 
         x={-(units < 10 ? 11.75 : 12)} // Being super picky here
         y={-11.5}
