@@ -90,8 +90,14 @@ type BoardState = {
 }
 
 export const BoardComponent = (props: any) => {
+  // console.log(props);
+
   const board = loadBoard(props.G, props.playerID);
   const stage = props.ctx.activePlayers[props.playerID];
+  const players = props.gameMetadata.reduce((players, p) => {
+    players[p.id] = p;
+    return players;
+  }, {});
 
   const [ boardState, setBoardState ] = useState<BoardState>({});
 
@@ -139,17 +145,31 @@ export const BoardComponent = (props: any) => {
     isTerritoryActive = (territory: Territory) => {
       return (territory.controlledBy === props.playerID)
     }
-  } else {
-    tools = (
-      <div className="alert alert-secondary mb-0" role="alert">
-        Waiting for other players...
-      </div>
-    )
+  }
+
+  const toolsCard = () => {
+    if (props.ctx.currentPlayer == props.playerID) {
+      return  (
+        <div className="card">
+          <div className="card-body">
+            {tools}
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="alert alert-primary mb-0 text-center" role="alert">
+          {players[props.ctx.currentPlayer].name}'s turn
+        </div>
+      )
+    }
   }
 
   const territoryState = () => {
     const t = boardState.hoverTerritory;
     if (t) {
+      console.log(t);
+
       return (
 
         <div className="card">
@@ -171,11 +191,7 @@ export const BoardComponent = (props: any) => {
     <div className="container-fluid">
       <div className="row">
         <div className="col">
-          <div className="card">
-            <div className="card-body">
-              {tools}
-            </div>
-          </div>
+          {toolsCard()}
         </div>
 
         <div className="col">

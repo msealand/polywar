@@ -57,7 +57,7 @@ const LobbyEnter = (props) => {
 
 const LobbyHeader = (props) => {
   return (
-    <nav className="navbar">
+    <nav className="navbar mb-3">
       <div className="navbar-brand">{props.playerName}</div>
 
       <form className="form-inline">
@@ -69,7 +69,7 @@ const LobbyHeader = (props) => {
 
 const GameHeader = (props) => {
   return (
-    <nav className="navbar">
+    <nav className="navbar mb-3">
       <div className="navbar-brand">{props.playerName}</div>
 
       <form className="form-inline">
