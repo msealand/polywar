@@ -4,9 +4,9 @@ import { Lobby, Client } from 'boardgame.io/react';
 import { PolyWar } from 'polywar';
 import { PolyWarClient } from '../game/PolyWarClient';
 
-import { LobbyCreateRoomForm } from './create-room-form';
 import { LobbyRoomInstance } from './room-instance';
 import { LobbyLoginContainer } from './LobbyLogin';
+import { CreateRoomContainer } from './CreateRoom';
 
 enum LobbyPhases {
   ENTER = 'enter',
@@ -91,22 +91,6 @@ const LobbyHeader = (props: LobbyProps) => {
   )
 }
 
-const CreateRoom = (props: LobbyProps) => {
-  return (
-    <div className="card">
-      <div className="card-header">
-        <h5 className="mb-0">Create a game</h5>
-      </div>
-      <div className="card-body">
-        <LobbyCreateRoomForm
-          games={props.gameComponents}
-          createGame={props.handleCreateRoom}
-        />
-      </div>
-    </div>
-  )
-}
-
 const RoomList = (props: LobbyProps) => {
   return (
     <div className="card">
@@ -134,7 +118,7 @@ const LobbyList = (props: LobbyProps) => {
         <div className="row">
 
           <div className="col col-3">
-            {CreateRoom(props)}
+            {CreateRoomContainer(props)}
           </div>
 
           <div className="col">

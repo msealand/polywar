@@ -35,7 +35,7 @@ const LobbyLogin = (props: LobbyLoginProps) => {
 
 export const LobbyLoginContainer = (props: LobbyProps) => {
   return (
-    <div className="w-25 mx-auto ">
+    <div className="w-25 mx-auto">
         <LobbyLogin playerName={props.playerName} enterLobby={props.handleEnterLobby} />
     </div>
   );
