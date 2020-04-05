@@ -4,9 +4,9 @@ import { Lobby, Client } from 'boardgame.io/react';
 import { PolyWar } from 'polywar';
 import { PolyWarClient } from '../game/PolyWarClient';
 
-import { LobbyLoginForm } from './login-form';
 import { LobbyCreateRoomForm } from './create-room-form';
 import { LobbyRoomInstance } from './room-instance';
+import { LobbyLoginContainer } from './LobbyLogin';
 
 enum LobbyPhases {
   ENTER = 'enter',
@@ -26,7 +26,7 @@ type GameComponent = {
   board: Client
 }
 
-type LobbyProps = {
+export type LobbyProps = {
   errorMsg: string;
   gameComponents: Array<GameComponent>;
   rooms: Array<Room>;
@@ -34,7 +34,7 @@ type LobbyProps = {
   playerName: string;
   runningGame: Game;
 
-  handleEnterLobby: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleEnterLobby: (playerName: string) => void;
   handleExitLobby: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   handleCreateRoom: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   handleJoinRoom: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -88,16 +88,6 @@ const LobbyHeader = (props: LobbyProps) => {
         <button type="button" className="btn btn-outline-danger my-2 my-sm-0" onClick={props.handleExitLobby}>Exit lobby</button>
       </form>
     </nav>
-  )
-}
-
-const LobbyEnter = (props: LobbyProps) => {
-  return (
-    <LobbyLoginForm
-      key={props.playerName}
-      playerName={props.playerName}
-      onEnter={props.handleEnterLobby}
-    />
   )
 }
 
@@ -175,9 +165,9 @@ const LobbyPlay = (props: LobbyProps) => {
 
 const renderLobby = (props: LobbyProps) => {
   switch (props.phase) {
-    case LobbyPhases.ENTER: return LobbyEnter(props);
-    case LobbyPhases.LIST: return LobbyList(props);
-    case LobbyPhases.PLAY: return LobbyPlay(props);
+    case LobbyPhases.ENTER: return LobbyLoginContainer(props);
+    case LobbyPhases.LIST:  return LobbyList(props);
+    case LobbyPhases.PLAY:  return LobbyPlay(props);
     default: return (
       <div className="alert alert-error">Invalid Lobby Phase</div>
     )
