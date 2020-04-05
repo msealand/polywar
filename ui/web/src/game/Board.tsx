@@ -10,10 +10,15 @@ export type Board = {
 
 const DeploymentToolsComponent = (props: any) => {
   return (
-    <div>
-      <button onClick={() => {
-        props.moves.completeDeploymentPhase();
-      }}>Complete Deployment</button>
+    <div className="text-center">
+      <button 
+        type="button" className="btn btn-primary"
+        onClick={() => {
+          props.moves.completeDeploymentPhase();
+        }}
+      >
+        Complete Deployment
+      </button>
     </div>
   )
 }
@@ -21,17 +26,27 @@ const DeploymentToolsComponent = (props: any) => {
 const AttackToolsComponent = (props: any) => {
   let attackButton;
   if (props.attacker && props.defender) {
-    attackButton = <button onClick={() => {
-      props.moves.attack(props.attacker, props.defender);
-    }}>Attack</button>
+    attackButton = <button 
+      type="button" className="btn btn-primary"
+      onClick={() => {
+        props.moves.attack(props.attacker, props.defender);
+      }}
+    >
+      Attack
+    </button>
   } else {
-    attackButton = <button onClick={() => {
-      props.moves.completeAttackPhase();
-    }}>Finished Attacking</button>
+    attackButton = <button 
+      type="button" className="btn btn-primary"
+      onClick={() => {
+        props.moves.completeAttackPhase();
+      }}
+    >
+      Finished Attacking
+    </button>
   }
 
   return (
-    <div>
+    <div className="text-center">
       {attackButton}
     </div>
   )
@@ -39,20 +54,30 @@ const AttackToolsComponent = (props: any) => {
 
 const PostAttackTransferToolsComponent = (props: any) => {
   return (
-    <div>
-      <button onClick={() => {
-        props.moves.postAttackTransfer();
-      }}>Transfer</button>
+    <div className="text-center">
+      <button 
+        type="button" className="btn btn-primary"
+        onClick={() => {
+          props.moves.postAttackTransfer();
+        }}
+      >
+        Transfer
+      </button>
     </div>
   )
 }
 
 const TransferToolsComponent = (props: any) => {
   return (
-    <div>
-      <button onClick={() => {
-        props.moves.completeTransferPhase();
-      }}>Finished Transfers</button>
+    <div className="text-center">
+      <button 
+        type="button" className="btn btn-primary"
+        onClick={() => {
+          props.moves.completeTransferPhase();
+        }}
+      >
+        Finished Transfers
+      </button>
     </div>
   )
 }
@@ -111,23 +136,36 @@ export const BoardComponent = (props: any) => {
     isTerritoryActive = (territory: Territory) => {
       return (territory.controlledBy === props.playerID)
     }
+  } else {
+    tools = (
+      <div className="alert alert-secondary mb-0" role="alert">
+        Waiting for other players...
+      </div>
+    )
   }
 
   return (
-    <div className="h-100">
-      <div className="row align-items-center">
-        <div className="col d-flex justify-content-center">
-          <div className="toolbar">
-            {tools}
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col">
+          <div className="card">
+            <div className="card-body">
+              {tools}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="row align-items-center">
-          <div className="col d-flex justify-content-center">
-              <div className="map">
-                  <MapComponent board={board} isTerritoryActive={isTerritoryActive} handleTerritoryClick={handleTerritoryClick} />
-              </div>
+
+        <div className="col">
+            <MapComponent board={board} isTerritoryActive={isTerritoryActive} handleTerritoryClick={handleTerritoryClick} />
+        </div>
+
+        <div className="col">
+          <div className="card">
+            <div className="card-body">
+              Something...
+            </div>
           </div>
+        </div>
       </div>
     </div>
   );

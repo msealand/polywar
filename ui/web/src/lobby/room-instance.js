@@ -127,7 +127,7 @@ export class LobbyRoomInstance extends React.Component {
     }
 
     return (
-      <div className="container">
+      <div className="container-fluid">
         <div className="row">
           {/* <div className="col col-1">{status}</div>
           <div className="col col-1">{room.gameName}</div> */}

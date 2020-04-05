@@ -44,20 +44,45 @@ export const MapComponent = (props: any) => {
     } />
   })
 
+  // Original size of map...
+  const CANVAS_VIRTUAL_WIDTH = 1003;
+  const CANVAS_VIRTUAL_HEIGHT = 588;
+
+  const windowWidth = window.innerWidth;
+  let width = CANVAS_VIRTUAL_WIDTH;
+  
+  // Some gusses on sizes based on window width
+  if (windowWidth > 1200) {
+    width = CANVAS_VIRTUAL_WIDTH;
+  } else if (windowWidth > 992) {
+    width = 800;
+  } else if (windowWidth > 768) {
+    width = 600;
+  } else if (windowWidth > 576) {
+    width = 480;
+  } else {
+    width = 320;
+  }
+
+  const height = (width * (CANVAS_VIRTUAL_HEIGHT / CANVAS_VIRTUAL_WIDTH));
+  const scale = width / CANVAS_VIRTUAL_WIDTH;
+  
   return (
-    <Stage width={1003} height={588}>
-      <Layer>
-        <MapImageComponent boardId="1584805889" />
-      </Layer>
-      <Layer>
-        {territoryBorderComponents}
-      </Layer>
-      <Layer>
-        {territoryConnectionsComponents}
-      </Layer>
-      <Layer>
-        {territoryComponents}
-      </Layer>
-    </Stage>
+    <div className="map mx-auto" style={{ width: width + 2 }}>
+      <Stage width={width} height={height} scaleX={scale} scaleY={scale}>
+        <Layer>
+          <MapImageComponent boardId="1584805889" />
+        </Layer>
+        <Layer>
+          {territoryBorderComponents}
+        </Layer>
+        <Layer>
+          {territoryConnectionsComponents}
+        </Layer>
+        <Layer>
+          {territoryComponents}
+        </Layer>
+      </Stage>
+    </div>
   );
 };
