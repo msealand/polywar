@@ -148,7 +148,7 @@ export const BoardComponent = (props: any) => {
   }
 
   const toolsCard = () => {
-    if (props.ctx.currentPlayer == props.playerID) {
+    if (props.ctx.currentPlayer === props.playerID) {
       return  (
         <div className="card">
           <div className="card-body">

@@ -46,7 +46,7 @@ export type LobbyProps = {
 
 const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeaveRoom, handleStartGame) => {
   const isInGame = rooms.some((room) => 
-    room.players.find(p => p.name == playerName)
+    room.players.find(p => p.name === playerName)
   )
 
   return rooms.map(room => {
