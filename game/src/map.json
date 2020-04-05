@@ -466,7 +466,7 @@
       },
       {
         "id": "25",
-        "name": "Mexico 1",
+        "name": "Nothern Mexico",
         "position": {
           "x": 182,
           "y": 318
@@ -483,7 +483,7 @@
       },
       {
         "id": "26",
-        "name": "Mexico 2",
+        "name": "Southern Mexico",
         "position": {
           "x": 207,
           "y": 346
@@ -500,7 +500,7 @@
       },
       {
         "id": "27",
-        "name": "Mexico 3",
+        "name": "Central America",
         "position": {
           "x": 240,
           "y": 361
@@ -516,7 +516,7 @@
       },
       {
         "id": "28",
-        "name": "Mexico 4",
+        "name": "Cuba",
         "position": {
           "x": 258,
           "y": 334
@@ -533,7 +533,7 @@
       },
       {
         "id": "29",
-        "name": "Mexico 5",
+        "name": "Dominican Republic",
         "position": {
           "x": 282,
           "y": 342
@@ -666,7 +666,7 @@
       },
       {
         "id": "36",
-        "name": "Isis",
+        "name": "Iraq",
         "position": {
           "x": 602,
           "y": 298
@@ -706,7 +706,7 @@
       },
       {
         "id": "38",
-        "name": "Afghan",
+        "name": "Afghanistan",
         "position": {
           "x": 676,
           "y": 298
@@ -727,7 +727,7 @@
       },
       {
         "id": "39",
-        "name": "9/11 Funders",
+        "name": "Saudi Arabia",
         "position": {
           "x": 606,
           "y": 324
@@ -782,7 +782,7 @@
       },
       {
         "id": "42",
-        "name": "King Tut",
+        "name": "Egypt",
         "position": {
           "x": 567,
           "y": 318
@@ -951,7 +951,7 @@
       },
       {
         "id": "51",
-        "name": "White Russia",
+        "name": "Belarus",
         "position": {
           "x": 588,
           "y": 206
@@ -1086,7 +1086,7 @@
       },
       {
         "id": "58",
-        "name": "Mt Everest",
+        "name": "Nepal",
         "position": {
           "x": 726,
           "y": 300
@@ -1127,7 +1127,7 @@
       },
       {
         "id": "60",
-        "name": "Manchukuo 2",
+        "name": "Southern Mongolia",
         "position": {
           "x": 776,
           "y": 242
@@ -1147,7 +1147,7 @@
       },
       {
         "id": "61",
-        "name": "Manchukuo 3",
+        "name": "Northern China",
         "position": {
           "x": 799,
           "y": 266
@@ -1167,7 +1167,7 @@
       },
       {
         "id": "62",
-        "name": "China",
+        "name": "Central China",
         "position": {
           "x": 752,
           "y": 285
@@ -1186,7 +1186,7 @@
       },
       {
         "id": "63",
-        "name": "Asianstans",
+        "name": "Western China",
         "position": {
           "x": 724,
           "y": 262
@@ -1286,7 +1286,7 @@
       },
       {
         "id": "68",
-        "name": "New Zealand",
+        "name": "Northern New Zealand",
         "position": {
           "x": 979,
           "y": 513
@@ -1302,7 +1302,7 @@
       },
       {
         "id": "69",
-        "name": "New Zealand 1",
+        "name": "Southern New Zealand",
         "position": {
           "x": 964,
           "y": 533
@@ -1788,7 +1788,7 @@
       },
       {
         "id": "95",
-        "name": "Mad gas car",
+        "name": "Madagascar",
         "position": {
           "x": 616,
           "y": 453
@@ -1803,7 +1803,7 @@
       },
       {
         "id": "96",
-        "name": "German East Afrika",
+        "name": "Kenya",
         "position": {
           "x": 584,
           "y": 410
@@ -1956,7 +1956,7 @@
       },
       {
         "id": "104",
-        "name": "Starvin Marvin",
+        "name": "Ethiopia",
         "position": {
           "x": 590,
           "y": 366
@@ -1973,7 +1973,7 @@
       },
       {
         "id": "105",
-        "name": "Butt Pirates",
+        "name": "Somalia",
         "position": {
           "x": 616,
           "y": 382
@@ -1990,7 +1990,7 @@
       },
       {
         "id": "106",
-        "name": "Sumatra",
+        "name": "Malaysia",
         "position": {
           "x": 771,
           "y": 398
@@ -2008,7 +2008,7 @@
       },
       {
         "id": "107",
-        "name": "Java",
+        "name": "Timorleste",
         "position": {
           "x": 812,
           "y": 422
@@ -2026,7 +2026,7 @@
       },
       {
         "id": "108",
-        "name": "Papa",
+        "name": "Eastern Indonesia",
         "position": {
           "x": 870,
           "y": 410
@@ -2043,7 +2043,7 @@
       },
       {
         "id": "109",
-        "name": "New Guinea",
+        "name": "Papua New Guinea",
         "position": {
           "x": 898,
           "y": 415
@@ -2059,7 +2059,7 @@
       },
       {
         "id": "110",
-        "name": "Sulawesi",
+        "name": "Western Indonesia",
         "position": {
           "x": 832,
           "y": 398
@@ -2077,7 +2077,7 @@
       },
       {
         "id": "111",
-        "name": "Indonesia",
+        "name": "Brunei",
         "position": {
           "x": 807,
           "y": 390
@@ -2095,7 +2095,7 @@
       },
       {
         "id": "112",
-        "name": "Luzon",
+        "name": "Philippines",
         "position": {
           "x": 836,
           "y": 366
@@ -2199,7 +2199,7 @@
       },
       {
         "id": "118",
-        "name": "The Bush",
+        "name": "South Australia",
         "position": {
           "x": 852,
           "y": 483
@@ -2217,7 +2217,7 @@
       },
       {
         "id": "119",
-        "name": "Croc Dundee",
+        "name": "Western Australia",
         "position": {
           "x": 823,
           "y": 474
@@ -2248,7 +2248,7 @@
       },
       {
         "id": "121",
-        "name": "Mongolia 1",
+        "name": "Northwestern Mongolia",
         "position": {
           "x": 747,
           "y": 214
@@ -2270,7 +2270,7 @@
       },
       {
         "id": "122",
-        "name": "Mongolia 2",
+        "name": "Northeastern Mongolia",
         "position": {
           "x": 810,
           "y": 214
@@ -2377,7 +2377,7 @@
       },
       {
         "id": "127",
-        "name": "October Revolution",
+        "name": "The Arctic",
         "position": {
           "x": 770,
           "y": 20
@@ -2394,7 +2394,7 @@
       },
       {
         "id": "128",
-        "name": "Putin's Party",
+        "name": "Northen Russia",
         "position": {
           "x": 878,
           "y": 65
@@ -2411,7 +2411,7 @@
       },
       {
         "id": "129",
-        "name": "Stalinsland",
+        "name": "Southwestern Russia",
         "position": {
           "x": 935,
           "y": 204
@@ -2429,7 +2429,7 @@
       },
       {
         "id": "130",
-        "name": "Gorby's Place",
+        "name": "Western Russia",
         "position": {
           "x": 916,
           "y": 166
@@ -2449,7 +2449,7 @@
       },
       {
         "id": "131",
-        "name": "Leonid Brez",
+        "name": "South-central Russia",
         "position": {
           "x": 871,
           "y": 180
