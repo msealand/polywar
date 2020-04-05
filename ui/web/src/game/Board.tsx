@@ -158,20 +158,26 @@ export const BoardComponent = (props: any) => {
       )
     } else {
       return (
-        <div className="alert alert-primary mb-0 text-center" role="alert">
+        <div className="alert alert-dark mb-0 text-center" role="alert">
           {players[props.ctx.currentPlayer].name}'s turn
         </div>
       )
     }
   }
 
+  const controlledBy = (t: Territory) => {
+    const player = players[t.controlledBy]
+    if (player) {
+      return (<li className="list-group-item">Controlled By: {player.name}</li>)
+    } else {
+      return (<li className="list-group-item">Neutral Territory</li>)
+    }
+  }
+
   const territoryState = () => {
     const t = boardState.hoverTerritory;
     if (t) {
-      console.log(t);
-
       return (
-
         <div className="card">
           <div className="card-header">
             <h5 className="text-center mb-0">{t.name}</h5>
@@ -179,7 +185,7 @@ export const BoardComponent = (props: any) => {
           <div className="card-body">
             <ul className="list-group list-group-flush">
               <li className="list-group-item">{t.units} Units</li>
-              <li className="list-group-item">Controlled By: {t.controllerBy}</li>
+              {controlledBy(t)}
             </ul>
           </div>
         </div>
@@ -200,10 +206,10 @@ export const BoardComponent = (props: any) => {
               isTerritoryActive={isTerritoryActive} 
               handleTerritoryClick={handleTerritoryClick}
               handleTerritoryEntry={(territory: Territory) => {
-                boardState.hoverTerritory = territory;
+                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: territory });
               }}
               handleTerritoryExit={() => {
-                boardState.hoverTerritory = undefined;
+                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: undefined });
               }}
             />
         </div>

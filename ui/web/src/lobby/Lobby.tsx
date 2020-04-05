@@ -28,7 +28,7 @@ const renderRooms = (rooms: Array<Room>, playerName, handleJoinRoom, handleLeave
     return rooms.map(room => {
       const { gameID, gameName, players } = room;
       return (
-        <li className="list-group-item">
+        <li key={'instance-' + gameID + '-item'} className="list-group-item">
           <LobbyRoomInstance
             key={'instance-' + gameID}
             room={{ gameID, gameName, players: Object.values(players) }}
