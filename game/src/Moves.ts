@@ -6,9 +6,17 @@ import { Territory } from "./Territory";
 export const deployUnits = {
     move: (G: any, ctx: Ctx, territoryId: string, unitCount: number) => {
         const territory: Territory = G.boardData.territories.find((t: Territory) => t.id === territoryId);
+        const player = G.players[ctx.currentPlayer];
+        const reserveUnits = player?.reserveUnits ?? 0;
+        if (unitCount > reserveUnits) {
+            console.log(`not enough units`);
+            return;
+        }
+
         if (territory && (((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === ctx.currentPlayer))) {
             territory.controlledBy = ctx.currentPlayer;
             territory.units = (territory.units ?? 0) + unitCount;
+            player.reserveUnits = player.reserveUnits - unitCount;
 
             territory.colorIdx = ctx.player?.get()?.colorIdx;
         }

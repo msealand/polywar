@@ -11,6 +11,8 @@ export type Board = {
 const DeploymentToolsComponent = (props: any) => {
   return (
     <div className="text-center">
+      <div className="pb-3">{props.player?.reserveUnits ?? 0} Reserve Units</div>
+
       <button 
         type="button" className="btn btn-primary"
         onClick={() => {
@@ -106,7 +108,7 @@ export const BoardComponent = (props: any) => {
   let handleTerritoryClick: ((territory: Territory) => void) | undefined = undefined;
 
   if (stage === 'deploy') {
-    tools = <DeploymentToolsComponent moves={props.moves} />
+    tools = <DeploymentToolsComponent player={props.G.players[props.ctx.currentPlayer]} moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
       return (territory.controlledBy === props.playerID); //(((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === props.playerID));
     }
@@ -152,6 +154,9 @@ export const BoardComponent = (props: any) => {
       return  (
         <div className="card">
           <div className="card-body">
+            {/* <button type="button" className="btn btn-sm btn-warning" onClick={() => { 
+              props.undo() 
+            }}>Undo</button> */}
             {tools}
           </div>
         </div>

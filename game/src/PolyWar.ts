@@ -13,7 +13,6 @@ export const PolyWar = {
     plugins: [PluginPlayer],
 
     setup: (ctx: Ctx) => {
-        // const boardData = require('./map.json');
         const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
         const random = ctx.random!;
@@ -21,14 +20,14 @@ export const PolyWar = {
             let randomTerritories = random.Shuffle(boardData.territories);
 
             while (randomTerritories.length > 0) {
-                for (let playerID = -1; playerID < ctx.numPlayers; playerID++) {
+                for (let playerId = -1; playerId < ctx.numPlayers; playerId++) {
                     const t: any = randomTerritories.find((t: any) => (t.units ?? 0) < initialUnitDeployment);
                     if (t) {
-                        t.colorIdx = playerID + 1
-                        t.controlledBy = `${playerID}`;
+                        t.colorIdx = playerId + 1
+                        t.controlledBy = `${playerId}`;
                         t.units = (t.units ?? 0) + 1;
                     } else {
-                        console.log(`no t`, initialUnitDeployment, playerID, randomTerritories.length); 
+                        console.log(`no t`, initialUnitDeployment, playerId, randomTerritories.length); 
                         randomTerritories = [];
                     }
                     randomTerritories = randomTerritories.filter((rt: any) => rt.id !== t.id);
@@ -36,8 +35,19 @@ export const PolyWar = {
                 }
             }
         }
+
+        const players = (new Array(ctx.numPlayers)).fill({
+            reserveUnits: 3
+        }).reduce((players, player, idx) => {
+            const playerId = `${idx}`;
+            player.id = playerId;
+            players[playerId] = player;
+            return players;
+        }, {});
+
+        console.log(`Players: ${players}`);
   
-        return { boardData: boardData }
+        return { boardData, players }
     },
   
     playerSetup: (playerID: string) => ({ 
@@ -46,6 +56,19 @@ export const PolyWar = {
   
     turn: {
         activePlayers: { currentPlayer: 'deploy' },
+
+        onBegin: (G, ctx) => {
+            const territoryCount = G.boardData.territories.reduce((count, territory) => {
+                if (territory.controlledBy === ctx.currentPlayer) return count + 1;
+                return count;
+            }, 0);
+            
+            const unitBonus = Math.max(3, Math.floor(territoryCount / 3));
+
+            let units = G.players[ctx.currentPlayer].reserveUnits;
+            units += unitBonus;
+            G.players[ctx.currentPlayer].reserveUnits = units;
+        },
 
         stages: {
             deploy: {
