@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
+import { checkTerritoryGroups } from './Territory';
 
 export const PolyWar = {
     name: "poly-war",
@@ -58,15 +59,28 @@ export const PolyWar = {
         activePlayers: { currentPlayer: 'deploy' },
 
         onBegin: (G, ctx) => {
+            // Just in case... probably not required.
+            checkTerritoryGroups(G);
+
             const territoryCount = G.boardData.territories.reduce((count, territory) => {
                 if (territory.controlledBy === ctx.currentPlayer) return count + 1;
                 return count;
             }, 0);
-            
+            const groupBonus = G.boardData.groups.filter((group) => {
+                return group.controlledBy == ctx.currentPlayer;
+            }).reduce((groupBonus, group) => {
+                return groupBonus + group.bonusUnits;
+            }, 0);
+
             const unitBonus = Math.max(3, Math.floor(territoryCount / 3));
+            const totalBonus = unitBonus + groupBonus;
+
+            console.log(`Territory Unit Bonus: ${unitBonus}`);
+            console.log(`Group Unit Bonus: ${groupBonus}`);
+            console.log(`Total Unit Bonus: ${totalBonus}`);
 
             let units = G.players[ctx.currentPlayer].reserveUnits;
-            units += unitBonus;
+            units += totalBonus;
             G.players[ctx.currentPlayer].reserveUnits = units;
         },
 

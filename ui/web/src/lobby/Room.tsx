@@ -21,7 +21,7 @@ export const Room = (props: RoomProps) => {
 
   const playerSlot = (player, idx) => {
     return (
-      <li className="list-group-item" key={gameId + '-player-' + player.id}>
+      <li className="list-group-item list-group-item-dark" key={gameId + '-player-' + player.id}>
         <p className="text-monospace mb-0">
           Slot {idx + 1}: {player.name || '[free]'}
         </p>

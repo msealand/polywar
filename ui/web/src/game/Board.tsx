@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Territory } from 'polywar';
+import { Territory, TerritoryGroup } from 'polywar';
 import { MapComponent } from './Map';
 
 import { loadBoard } from './loadBoard';
@@ -173,9 +173,54 @@ export const BoardComponent = (props: any) => {
   const controlledBy = (t: Territory) => {
     const player = players[t.controlledBy]
     if (player) {
-      return (<li className="list-group-item">Controlled By: {player.name}</li>)
+      return (<li className="list-group-item list-group-item-dark">Controlled By: {player.name}</li>)
     } else {
-      return (<li className="list-group-item">Neutral Territory</li>)
+      return (<li className="list-group-item list-group-item-dark">Neutral Territory</li>)
+    }
+  }
+
+  const groups = (territory?: Territory) => {
+    const groups = territory?.groups ?? board.groups;
+
+    return groups.sort((g1, g2) => {
+      // const controlledByCurrentPlayer1 = groupIsControlled(board.territories, g1, props.ctx.currentPlayer);
+      // const controlledByCurrentPlayer2 = groupIsControlled(board.territories, g2, props.ctx.currentPlayer);
+
+      // if (controlledByCurrentPlayer1 && !controlledByCurrentPlayer2) return -1;
+      // else if (controlledByCurrentPlayer2 && !controlledByCurrentPlayer1) return 1;
+      // else {
+        return g2.bonusUnits - g1.bonusUnits;
+      // }
+    }).map((g: TerritoryGroup) => {
+      const controlledByCurrentPlayer = (g.controlledBy == props.ctx.currentPlayer);
+      const controlled = (g.controlledBy !== undefined);
+
+      const style = controlled ? (controlledByCurrentPlayer ? "list-group-item-success" : "list-group-item-danger") : "list-group-item-dark";
+      return (
+        <li className={`list-group-item list-group-item-compact ${style}`} key={`territorygroup-${g.id}`}>
+          {g.name}
+          <div className="float-right">+{g.bonusUnits}</div>
+        </li>
+      )
+    })
+  }
+
+  const groupsCard = (territory?: Territory) => {
+    return (
+      <div className="card mt-3">
+        <div className="card-body p-0 m-0">
+          <ul className="list-group list-group-flush p-0 m-0">
+            {groups(territory)}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+
+  const groupsState = () => {
+    const t = boardState.hoverTerritory;
+    if (t) {
+      return groupsCard(t)
     }
   }
 
@@ -189,7 +234,7 @@ export const BoardComponent = (props: any) => {
           </div>
           <div className="card-body">
             <ul className="list-group list-group-flush">
-              <li className="list-group-item">{t.units} Units</li>
+              <li className="list-group-item list-group-item-dark">{t.units} Units</li>
               {controlledBy(t)}
             </ul>
           </div>
@@ -203,6 +248,7 @@ export const BoardComponent = (props: any) => {
       <div className="row">
         <div className="col">
           {toolsCard()}
+          {groupsCard()}
         </div>
 
         <div className="col">
@@ -221,6 +267,7 @@ export const BoardComponent = (props: any) => {
 
         <div className="col">
           {territoryState()}
+          {groupsState()}
         </div>
       </div>
     </div>

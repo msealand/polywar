@@ -32,8 +32,14 @@ html, body {
     background-color: #4f4f4f;
 }
 
-.list-group-item {
+.list-group-item-dark {
     background-color: #4f4f4f;
+    color: #fff;
+}
+
+.list-group-item-compact {
+    padding: 6px 10px 6px 10px;
+    font-size: smaller;
 }
 
 body {

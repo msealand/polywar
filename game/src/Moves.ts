@@ -1,7 +1,6 @@
 import { Ctx } from "boardgame.io";
 
-import { Territory } from "./Territory";
-
+import { Territory, checkTerritoryGroups } from "./Territory";
 
 export const deployUnits = {
     move: (G: any, ctx: Ctx, territoryId: string, unitCount: number) => {
@@ -15,6 +14,8 @@ export const deployUnits = {
 
         if (territory && (((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === ctx.currentPlayer))) {
             territory.controlledBy = ctx.currentPlayer;
+            checkTerritoryGroups(G);
+
             territory.units = (territory.units ?? 0) + unitCount;
             player.reserveUnits = player.reserveUnits - unitCount;
 
@@ -92,6 +93,8 @@ export const attack = {
             defendingTerritory.controlledBy = attackingTerritory.controlledBy;
             attackingTerritory.units = attackingTerritory.units - defendingTerritory.units;
 
+            checkTerritoryGroups(G);
+            
             // It's kind of weird to set this here...
             defendingTerritory.colorIdx = ctx.player?.get()?.colorIdx;
 

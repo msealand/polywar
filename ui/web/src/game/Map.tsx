@@ -2,11 +2,12 @@ import React from 'react';
 import { Stage, Layer, Image } from 'react-konva';
 import useImage from 'use-image';
 
-import { Territory } from 'polywar';
+import { Territory, TerritoryGroup } from 'polywar';
 import { TerritoryComponent, TerritoryBorderComponent, TerritoryConnectionsComponent } from './Territory';
 
 export type Board = {
   territories: Array<Territory>
+  groups: Array<TerritoryGroup>
 }
 
 const MapImageComponent = (props: {
