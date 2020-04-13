@@ -197,7 +197,7 @@ export const BoardComponent = (props: any) => {
 
       const style: CSSProperties = {
         backgroundColor: colors.fillColor,
-        color: colors.textColor,
+        color: g.fogged ? '#fff' : colors.textColor,
         borderColor: colors.strokeColor
       }
 

@@ -1,3 +1,5 @@
+import { Ctx } from "boardgame.io";
+
 export type Coordinate = { x: number, y: number };
 
 export type Territory = {
@@ -31,7 +33,25 @@ export type TerritoryGroup = {
   fogged: boolean;
 }
 
-export const checkTerritoryGroups = (G: any) => {
+const findTerritory = (G: any, id: string) => {
+  return G.boardData.territories.find(t => t.id === id);
+}
+
+export const checkBoardState = (G: any, ctx: Ctx) => {
+  checkTerritories(G, ctx);
+  checkTerritoryGroups(G);
+}
+
+const checkTerritories = (G: any, ctx: Ctx) => {
+  const playerId = ctx?.currentPlayer;
+  const territories = G.boardData.territories;
+  territories.forEach((t) => {
+    const borderingTerritories = t.borderingTerritories ?? t.borders.map(id => findTerritory(G, id));
+    t.fogged = (t.controlledBy !== playerId) && (!borderingTerritories.some((t) => t.controlledBy === playerId));
+  });
+}
+
+const checkTerritoryGroups = (G: any) => {
   const groups = G.boardData.groups;
   groups.forEach((group) => {
     const groupTerritories = G.boardData.territories.filter((t) => t.groups.find((g) => {

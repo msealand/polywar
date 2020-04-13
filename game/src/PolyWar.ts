@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
-import { checkTerritoryGroups } from './Territory';
+import { checkBoardState } from './Territory';
 
 export const PolyWar = {
     name: "poly-war",
@@ -60,7 +60,7 @@ export const PolyWar = {
 
         onBegin: (G, ctx) => {
             // Just in case... probably not required.
-            checkTerritoryGroups(G);
+            checkBoardState(G, ctx);
 
             const territoryCount = G.boardData.territories.reduce((count, territory) => {
                 if (territory.controlledBy === ctx.currentPlayer) return count + 1;

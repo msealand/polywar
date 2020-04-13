@@ -14,7 +14,7 @@ const wrapDeltaHeight = (588 * 0.5);
 export const TerritoryBorderComponent = (props: { territory: Territory }) => {
   const territory = props.territory;
 
-  const { fillColor, strokeColor } = colorsForIdx(territory.colorIdx, territory.fogged);
+  const { fillColor, strokeColor } = colorsForIdx(territory.colorIdx);//, territory.fogged);
 
   const borderPoints = territory.border.reduce<Array<number>>((pts, pt) => {
     pts.push(pt.x, pt.y);
@@ -31,12 +31,12 @@ export const TerritoryBorderComponent = (props: { territory: Territory }) => {
 export const TerritoryConnectionsComponent = (props: { territory: Territory, isActive?: IsTerritoryConnectionActiveCallback }) => {
   const territory = props.territory;
 
-  const { strokeColor: territoryColor } = colorsForIdx(territory.colorIdx, territory.fogged);
+  const { strokeColor: territoryColor } = colorsForIdx(territory.colorIdx);//, territory.fogged);
 
   const pos = territory.position;
   const connectingLines = territory.borderingTerritories.map((otherTerritory) => {
     const otherPos = Object.assign({}, otherTerritory.position);
-    const { strokeColor: otherColor } = colorsForIdx(otherTerritory.colorIdx, otherTerritory.fogged);
+    const { strokeColor: otherColor } = colorsForIdx(otherTerritory.colorIdx);//, otherTerritory.fogged);
 
     const xDelta = Math.abs(pos.x - otherPos.x);
     if (xDelta > wrapDeltaWidth) {
@@ -112,7 +112,7 @@ export const TerritoryComponent = (props: {
 
   const units = territory.units ?? 0;
 
-  const { fillColor, strokeColor, textColor } = colorsForIdx(territory.colorIdx, territory.fogged, isActive);
+  const { fillColor, strokeColor, textColor } = colorsForIdx(territory.colorIdx, /*territory.fogged*/false, isActive);
   const strokeWidth = (isActive ? 2.5 : 0.5)
 
   return (
