@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 import { Territory, TerritoryGroup } from 'polywar';
 import { MapComponent } from './Map';
 
 import { loadBoard } from './loadBoard';
+import { colorsForIdx } from './Colors';
 
 export type Board = {
   territories: Array<Territory>
@@ -192,12 +193,16 @@ export const BoardComponent = (props: any) => {
         return g2.bonusUnits - g1.bonusUnits;
       // }
     }).map((g: TerritoryGroup) => {
-      const controlledByCurrentPlayer = (g.controlledBy == props.ctx.currentPlayer);
-      const controlled = (g.controlledBy !== undefined);
+      const colors = colorsForIdx(g.colorIdx, g.fogged);
 
-      const style = controlled ? (controlledByCurrentPlayer ? "list-group-item-success" : "list-group-item-danger") : "list-group-item-dark";
+      const style: CSSProperties = {
+        backgroundColor: colors.fillColor,
+        color: colors.textColor,
+        borderColor: colors.strokeColor
+      }
+
       return (
-        <li className={`list-group-item list-group-item-compact ${style}`} key={`territorygroup-${g.id}`}>
+        <li className={`list-group-item list-group-item-compact`} style={style} key={`territorygroup-${g.id}`}>
           {g.name}
           <div className="float-right">+{g.bonusUnits}</div>
         </li>

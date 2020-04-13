@@ -2,6 +2,7 @@ import React from 'react';
 import { Circle, Text, Line, Group } from 'react-konva';
 
 import { Territory } from 'polywar'
+import { colorsForIdx } from './Colors';
 
 type IsTerritoryConnectionActiveCallback = (otherTerritory: Territory) => boolean;
 type IsTerritoryActiveCallback = () => boolean;
@@ -10,30 +11,10 @@ type TerritoryClickHandler = () => void;
 const wrapDeltaWidth = (1003 * 0.5);
 const wrapDeltaHeight = (588 * 0.5);
 
-function colorsForTerritory(territory: Territory, isActive: boolean = true) {
-  if (territory.fogged) {
-    const fog = 'hsla(0, 0%, 10%, 1.0)';
-    return {
-      fillColor: fog,
-      strokeColor: 'hsla(0, 0%, 40%, 1.0)',
-      textColor: fog
-    }
-  } else {
-    const alpha = 1.0;
-    const fillColor = territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 50%, 25%, ${alpha})` : `hsla(0, 0%, 25%, ${alpha})`;
-    const strokeColor = 
-      isActive ?
-        territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 100%, 70%, ${alpha})` : `hsla(0, 0%, 70%, ${alpha})`
-      : territory.colorIdx ? `hsla(${(territory.colorIdx ?? 0) * 137.508}, 90%, 60%, ${alpha})` : `hsla(0, 0%, 60%, ${alpha})`;
-    const textColor = `hsla(0, 100%, 100%, ${alpha})`;
-    return { fillColor, strokeColor, textColor };
-  }
-}
-
 export const TerritoryBorderComponent = (props: { territory: Territory }) => {
   const territory = props.territory;
 
-  const { fillColor, strokeColor } = colorsForTerritory(territory);
+  const { fillColor, strokeColor } = colorsForIdx(territory.colorIdx, territory.fogged);
 
   const borderPoints = territory.border.reduce<Array<number>>((pts, pt) => {
     pts.push(pt.x, pt.y);
@@ -50,12 +31,12 @@ export const TerritoryBorderComponent = (props: { territory: Territory }) => {
 export const TerritoryConnectionsComponent = (props: { territory: Territory, isActive?: IsTerritoryConnectionActiveCallback }) => {
   const territory = props.territory;
 
-  const { strokeColor: territoryColor } = colorsForTerritory(territory);
+  const { strokeColor: territoryColor } = colorsForIdx(territory.colorIdx, territory.fogged);
 
   const pos = territory.position;
   const connectingLines = territory.borderingTerritories.map((otherTerritory) => {
     const otherPos = Object.assign({}, otherTerritory.position);
-    const { strokeColor: otherColor } = colorsForTerritory(otherTerritory);
+    const { strokeColor: otherColor } = colorsForIdx(otherTerritory.colorIdx, otherTerritory.fogged);
 
     const xDelta = Math.abs(pos.x - otherPos.x);
     if (xDelta > wrapDeltaWidth) {
@@ -131,7 +112,7 @@ export const TerritoryComponent = (props: {
 
   const units = territory.units ?? 0;
 
-  const { fillColor, strokeColor, textColor } = colorsForTerritory(territory, isActive);
+  const { fillColor, strokeColor, textColor } = colorsForIdx(territory.colorIdx, territory.fogged, isActive);
   const strokeWidth = (isActive ? 2.5 : 0.5)
 
   return (

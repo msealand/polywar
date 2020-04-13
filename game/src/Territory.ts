@@ -24,8 +24,11 @@ export type TerritoryGroup = {
 
   bonusUnits: number;
   controlledBy: string;
-
+  
   territories: Array<Territory>;
+  
+  colorIdx: number;
+  fogged: boolean;
 }
 
 export const checkTerritoryGroups = (G: any) => {
@@ -38,10 +41,14 @@ export const checkTerritoryGroups = (G: any) => {
     let controllingPlayer = groupTerritories[0].controlledBy;
     if (controllingPlayer == "-1") controllingPlayer = undefined; // <-- Gotta find where we set -1
 
-    if (controllingPlayer === undefined) {
-        group.controlledBy = undefined;
+    if (groupTerritories.every(t => (t.controlledBy === controllingPlayer))) {
+      group.controlledBy = controllingPlayer;
+      group.colorIdx = groupTerritories[0].colorIdx;
+      group.fogged = false;
     } else {
-        group.controlledBy = groupTerritories.every(t => (t.controlledBy === controllingPlayer)) ? controllingPlayer : undefined;
-    }
+      group.controlledBy = undefined;
+      group.colorIdx = undefined;
+      group.fogged = groupTerritories.some(t => t.fogged);
+    } 
   })
 }
