@@ -14,12 +14,13 @@ export const deployUnits = {
 
         if (territory && (((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === ctx.currentPlayer))) {
             territory.controlledBy = ctx.currentPlayer;
-            checkBoardState(G, ctx);
 
             territory.units = (territory.units ?? 0) + unitCount;
             player.reserveUnits = player.reserveUnits - unitCount;
 
             territory.colorIdx = ctx.player?.get()?.colorIdx;
+            
+            checkBoardState(G, ctx);
         }
     },
     undoable: true,
@@ -93,10 +94,10 @@ export const attack = {
             defendingTerritory.controlledBy = attackingTerritory.controlledBy;
             attackingTerritory.units = attackingTerritory.units - defendingTerritory.units;
 
-            checkBoardState(G, ctx);
-
             // It's kind of weird to set this here...
             defendingTerritory.colorIdx = ctx.player?.get()?.colorIdx;
+
+            checkBoardState(G, ctx);
 
             console.log(attackingTerritory.controlledBy, defendingTerritory.controlledBy);
 
