@@ -11,9 +11,9 @@ export const PolyWar = {
     minPlayers: 2,
     maxPlayers: 10,
 
-    plugins: [PluginPlayer],
-
     setup: (ctx: Ctx) => {
+        // console.log(ctx);
+
         const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
         const random = ctx.random!;
@@ -24,7 +24,6 @@ export const PolyWar = {
                 for (let playerId = -1; playerId < ctx.numPlayers; playerId++) {
                     const t: any = randomTerritories.find((t: any) => (t.units ?? 0) < initialUnitDeployment);
                     if (t) {
-                        t.colorIdx = playerId + 1
                         t.controlledBy = `${playerId}`;
                         t.units = (t.units ?? 0) + 1;
                     } else {
@@ -42,18 +41,15 @@ export const PolyWar = {
         }).reduce((players, player, idx) => {
             const playerId = `${idx}`;
             player.id = playerId;
-            players[playerId] = player;
+            player.colorIdx = idx + 1;
+            players[playerId] = { ...player };
             return players;
         }, {});
 
-        console.log(`Players: ${players}`);
+        console.log(`Players:`, players);
   
         return { boardData, players }
     },
-  
-    playerSetup: (playerID: string) => ({ 
-      colorIdx: Number(playerID) + 1
-    }),
   
     turn: {
         activePlayers: { currentPlayer: 'deploy' },

@@ -97,10 +97,11 @@ export const BoardComponent = (props: any) => {
 
   const board = loadBoard(props.G, props.playerID);
   const stage = props.ctx.activePlayers[props.playerID];
-  const players = props.gameMetadata.reduce((players, p) => {
-    players[p.id] = p;
-    return players;
-  }, {});
+  const players = props.G.players;
+  props.gameMetadata.forEach((p) => {
+    const player = players[p.id];
+    Object.assign(player, p);
+  })
 
   const [ boardState, setBoardState ] = useState<BoardState>({});
 
@@ -109,7 +110,7 @@ export const BoardComponent = (props: any) => {
   let handleTerritoryClick: ((territory: Territory) => void) | undefined = undefined;
 
   if (stage === 'deploy') {
-    tools = <DeploymentToolsComponent player={props.G.players[props.ctx.currentPlayer]} moves={props.moves} />
+    tools = <DeploymentToolsComponent player={players[props.ctx.currentPlayer]} moves={props.moves} />
     isTerritoryActive = (territory: Territory) => {
       return (territory.controlledBy === props.playerID); //(((territory.controlledBy === undefined) && ((territory.units ?? 0) <= 0)) || (territory.controlledBy === props.playerID));
     }
@@ -193,7 +194,8 @@ export const BoardComponent = (props: any) => {
         return g2.bonusUnits - g1.bonusUnits;
       // }
     }).map((g: TerritoryGroup) => {
-      const colors = colorsForIdx(g.colorIdx, g.fogged);
+      const colorIdx = players[g.controlledBy]?.colorIdx;
+      const colors = colorsForIdx(colorIdx, g.fogged);
 
       const style: CSSProperties = {
         backgroundColor: colors.fillColor,
@@ -248,6 +250,28 @@ export const BoardComponent = (props: any) => {
     }
   }
 
+  const playerList = () => {
+    return Object.keys(players).map((id) => {
+      const player = players[id];
+      console.log(player);
+      const colors = colorsForIdx(player.colorIdx);
+      const style: CSSProperties = {
+        backgroundColor: colors.fillColor,
+        color: colors.textColor,
+        borderColor: colors.strokeColor
+      }
+      return (
+        <tr key={`player-${id}`} style={style}>
+          <th scope="row">{player.name}</th>
+          <td>{player.reserveUnits}</td>
+          {/* <td >Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td> */}
+        </tr>
+      )
+    })
+  }
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -268,6 +292,20 @@ export const BoardComponent = (props: any) => {
                 setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: undefined });
               }}
             />
+
+            <div className="players mt-3">
+              <table className="table table-sm table-dark">
+                <thead>
+                  <tr>
+                    <th scope="col">Player</th>
+                    <th scope="col">Reserve Units</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {playerList()}
+                </tbody>
+              </table>
+            </div>
         </div>
 
         <div className="col">

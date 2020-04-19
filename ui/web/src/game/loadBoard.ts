@@ -31,6 +31,7 @@ export function loadBoard(G: any, playerID: string): Board {
       return { x: p[0], y: p[1] };
     });
 
+    t.colorIdx = G.players[t.controlledBy]?.colorIdx;
     t.fogged = (t.controlledBy !== playerID) && (!t.borderingTerritories.some((t) => t.controlledBy === playerID));
     return t;
   });

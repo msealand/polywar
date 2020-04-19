@@ -63,11 +63,9 @@ const checkTerritoryGroups = (G: any) => {
 
     if (groupTerritories.every(t => (t.controlledBy === controllingPlayer))) {
       group.controlledBy = controllingPlayer;
-      group.colorIdx = groupTerritories[0].colorIdx;
       group.fogged = false;
     } else {
       group.controlledBy = undefined;
-      group.colorIdx = undefined;
       group.fogged = groupTerritories.some(t => t.fogged);
     } 
   })

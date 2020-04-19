@@ -17,8 +17,6 @@ export const deployUnits = {
 
             territory.units = (territory.units ?? 0) + unitCount;
             player.reserveUnits = player.reserveUnits - unitCount;
-
-            territory.colorIdx = ctx.player?.get()?.colorIdx;
             
             checkBoardState(G, ctx);
         }
@@ -93,9 +91,6 @@ export const attack = {
             defendingTerritory.units = attackCount - attackingLosses;
             defendingTerritory.controlledBy = attackingTerritory.controlledBy;
             attackingTerritory.units = attackingTerritory.units - defendingTerritory.units;
-
-            // It's kind of weird to set this here...
-            defendingTerritory.colorIdx = ctx.player?.get()?.colorIdx;
 
             checkBoardState(G, ctx);
 
