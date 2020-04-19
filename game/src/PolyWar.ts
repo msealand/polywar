@@ -10,7 +10,8 @@ export enum FogLevel {
     None = 0,
     Light = 1,
     Medium = 2,
-    Heavy = 3
+    Heavy = 3,
+    Total = 4
 }
 
 export type PolyWarRules = {
@@ -26,7 +27,7 @@ export const PolyWar = {
         console.log(`Initial Context:`, ctx);
         console.log(`Setup Data:`, setupData);
 
-        const rules = { fogLevel: FogLevel.Light };
+        const rules = { fogLevel: FogLevel.Medium };
 
         const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
@@ -90,12 +91,13 @@ export const PolyWar = {
         const territoryFogLevel = (t: any, playerID: string, fogLevel: FogLevel) => {     
             if (fogLevel == FogLevel.None) return FogLevel.None;
             else if (t.controlledBy === playerID) return FogLevel.None;
-            else if (fogLevel === FogLevel.Heavy) return FogLevel.Heavy;
+            else if (fogLevel === FogLevel.Total) return FogLevel.Total;
             else {
                 const borderingTerritories = t.borderingTerritories ?? t.borders.map(findTerritory);
                 const hasLineOfSight = borderingTerritories.some((t) => t.controlledBy === playerID);
                 if (hasLineOfSight) {
-                    return FogLevel.None;
+                    if (fogLevel === FogLevel.Heavy) return FogLevel.Light;
+                    else return FogLevel.None;
                 } else {
                     return fogLevel;
                 }
@@ -120,7 +122,8 @@ export const PolyWar = {
                     }
                 }
                 case FogLevel.Medium:
-                case FogLevel.Heavy: {
+                case FogLevel.Heavy:
+                case FogLevel.Total: {
                     fogged[t.id] = true;
                     return {
                         id: t.id,
