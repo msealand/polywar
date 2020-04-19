@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
-import { checkBoardState } from './Territory';
+import { checkBoardState, Territory } from './Territory';
 
 export enum FogLevel {
     None = 0,
@@ -22,11 +22,11 @@ export const PolyWar = {
     minPlayers: 2,
     maxPlayers: 10,
 
-    rules: { fogLevel: FogLevel.None },
-
     setup: (ctx: Ctx, setupData: any) => {
         console.log(`Initial Context:`, ctx);
         console.log(`Setup Data:`, setupData);
+
+        const rules = { fogLevel: FogLevel.Light };
 
         const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
@@ -62,14 +62,12 @@ export const PolyWar = {
 
         console.log(`Players:`, players);
   
-        return { boardData, players }
+        return { boardData, players, rules }
     },
 
     playerView: (G, ctx, playerID) => {
-        let g = { ...G };
-
-        const playerArray = Object.keys(g.players ?? {}).map((pid) => {
-            const p = g.players[pid];
+        const playerArray = Object.keys(G.players ?? {}).map((pid) => {
+            const p = G.players[pid];
             if (pid !== playerID) {
                 return {
                     id: p.id,
@@ -85,37 +83,76 @@ export const PolyWar = {
             return players;
         }, {});
 
-        // TODO: This should change based on fog level
-        const territories = g.boardData.territories.map((t) => {
-            // Heavy Fog
-            if (t.controlledBy !== playerID) {
+        const findTerritory = (id: string) => {
+            return G.boardData.territories.find(t => t.id === id);
+        }
+
+        const territoryFogLevel = (t: any, playerID: string, fogLevel: FogLevel) => {     
+            if (fogLevel == FogLevel.None) return FogLevel.None;
+            else if (t.controlledBy === playerID) return FogLevel.None;
+            else if (fogLevel === FogLevel.Heavy) return FogLevel.Heavy;
+            else {
+                const borderingTerritories = t.borderingTerritories ?? t.borders.map(findTerritory);
+                const hasLineOfSight = borderingTerritories.some((t) => t.controlledBy === playerID);
+                if (hasLineOfSight) {
+                    return FogLevel.None;
+                } else {
+                    return fogLevel;
+                }
+            }
+        }
+
+        const fogged: any = {};
+        const playerTerritoryData = (t: any, playerID: string, fogLevel: FogLevel) => {
+            fogLevel = territoryFogLevel(t, playerID, fogLevel);
+            switch (fogLevel) {
+                case FogLevel.None: {
+                    return t;
+                }
+                case FogLevel.Light: {
+                    return {
+                        id: t.id,
+                        name: t.name,
+                        position: t.position,
+                        groups: t.groups,
+                        borders: t.borders,
+                        controlledBy: t.controlledBy
+                    }
+                }
+                case FogLevel.Medium:
+                case FogLevel.Heavy: {
+                    fogged[t.id] = true;
+                    return {
+                        id: t.id,
+                        name: t.name,
+                        position: t.position,
+                        groups: t.groups,
+                        borders: t.borders
+                    }
+                }
+            }
+        }
+
+        const territories = G.boardData.territories.map((t) => {
+            return playerTerritoryData(t, playerID, G.rules?.fogLevel ?? FogLevel.None);
+        })
+
+        const groups = G.boardData.groups.map((g) => {
+            const isFogged = g.territories.some((tid) => fogged[tid]);
+            if (isFogged) {
                 return {
-                    id: t.id,
-                    name: t.name,
-                    position: t.position,
-                    groups: t.groups,
-                    borders: t.borders
+                    id: g.id,
+                    name: g.name,
+                    territories: g.territories,
+                    territoryCount: g.territoryCount,
+                    bonusUnits: g.bonusUnits
                 }
             } else {
-                return t;
+                return g;
             }
         })
 
-        const groups = g.boardData.groups.map((grp) => {
-            if (grp.controlledBy !== playerID) {
-                return {
-                    id: grp.id,
-                    name: grp.name,
-                    territories: grp.territories,
-                    territoryCount: grp.territoryCount,
-                    bonusUnits: grp.bonusUnits
-                }
-            } else {
-                return grp;
-            }
-        })
-
-        return { players, boardData: { territories, groups } };
+        return { players, boardData: { territories, groups }, rules: G.rules };
     },
   
     turn: {
