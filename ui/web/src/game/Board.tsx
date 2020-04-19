@@ -1,4 +1,6 @@
 import React, { useState, CSSProperties } from 'react';
+import { XCircle } from 'react-bootstrap-icons';
+
 import { Territory, TerritoryGroup } from 'polywar';
 import { MapComponent } from './Map';
 
@@ -27,30 +29,60 @@ const DeploymentToolsComponent = (props: any) => {
 }
 
 const AttackToolsComponent = (props: any) => {
-  let attackButton;
-  if (props.attacker && props.defender) {
-    attackButton = <button 
-      type="button" className="btn btn-primary"
-      onClick={() => {
-        props.moves.attack(props.attacker, props.defender);
-      }}
-    >
-      Attack
-    </button>
-  } else {
-    attackButton = <button 
-      type="button" className="btn btn-primary"
-      onClick={() => {
-        props.moves.completeAttackPhase();
-      }}
-    >
-      Finished Attacking
-    </button>
+  const message = () => {
+    if (!props.attacker) return (<div className="pb-3">Pick an attacking territory</div>);
+    else if (!props.defender) return (<div className="pb-3">Pick a defending territory</div>);
+    else return (
+      <div className="pb-3">{props.attacker.name} attacking {props.defender.name}</div>
+    )
+  }
+
+  const cancelButton = () => {
+    if (props.attacker || props.defender) {
+      return (
+        <XCircle className="float-right" style={{ color: "#f66" }} onClick={() => {
+          props.cancel();
+        }}></XCircle>
+      )
+    }
+  }
+
+  const attackButton = () => {
+    if (props.attacker && props.defender) {
+      return (
+        <button 
+          type="button" className="btn btn-primary"
+          onClick={() => {
+            props.moves.attack(props.attacker.id, props.defender.id);
+          }}
+        >
+          Attack
+        </button>
+      )
+    }
+  }
+
+  const finishedAttackingButton = () => {
+    if (!props.attacker || !props.defender) {
+      return (
+        <button 
+          type="button" className="btn btn-primary"
+          onClick={() => {
+            props.moves.completeAttackPhase();
+          }}
+        >
+          Finished Attacking
+        </button>
+      )
+    }
   }
 
   return (
     <div className="text-center">
-      {attackButton}
+      {cancelButton()}
+      {message()}
+      {attackButton()}
+      {finishedAttackingButton()}
     </div>
   )
 }
@@ -119,14 +151,22 @@ export const BoardComponent = (props: any) => {
       props.moves.deployUnits(territory.id, 1);
     }
   } else if (stage === 'attack') {
-    tools = <AttackToolsComponent moves={props.moves} attacker={boardState.attacker} defender={boardState.defender} />
+    const attacker = boardState.attacker ? board.territories.find((t) => t.id == boardState.attacker) : undefined;
+    const defender = boardState.defender ? board.territories.find((t) => t.id == boardState.defender) : undefined;
+
+    tools = <AttackToolsComponent moves={props.moves} attacker={attacker} defender={defender} cancel={() => {
+      setBoardState({ attacker: undefined, defender: undefined });
+    }} />
     if (boardState.attacker && !boardState.defender) {
-      isTerritoryActive = (territory: Territory) => {
+      const canBeDefender = (territory: Territory) => {
         const doesBorder = territory.borderingTerritories.some((t) => t.id === boardState.attacker);
-        return (doesBorder && ((territory.units ?? 0) > 0) && (territory.controlledBy !== props.playerID)) || (territory.id === boardState.attacker)
+        return (doesBorder && ((territory.units ?? 0) > 0) && (territory.controlledBy !== props.playerID))
       }
+      isTerritoryActive = canBeDefender;
       handleTerritoryClick = (territory: Territory) => {
-        setBoardState({ attacker: boardState.attacker, defender: territory.id });
+        if (canBeDefender(territory)) {
+          setBoardState({ attacker: boardState.attacker, defender: territory.id });
+        }
       }
     } else if (boardState.attacker && boardState.defender) {
       isTerritoryActive = (territory: Territory) => {
@@ -140,7 +180,9 @@ export const BoardComponent = (props: any) => {
         return (territory.controlledBy === props.playerID) && ((territory.units ?? 0) > 0) && territory.borderingTerritories.some((t) => ((t.units ?? 0) > 0) && (t.controlledBy !== props.playerID));
       }
       handleTerritoryClick = (territory: Territory) => {
-        setBoardState({ attacker: territory.id, defender: undefined });
+        if (territory.controlledBy === props.playerID) {
+          setBoardState({ attacker: territory.id, defender: undefined });
+        }
       }
     }
   } else if (stage === 'postAttackTransfer') {
@@ -216,7 +258,7 @@ export const BoardComponent = (props: any) => {
   const groupsCard = (territory?: Territory) => {
     return (
       <div className="card mt-3">
-        <div className="card-body p-0 m-0">
+        <div className="card-body p-0 m-0 overflow-auto" style={{ height: "500px" }}>
           <ul className="list-group list-group-flush p-0 m-0">
             {groups(territory)}
           </ul>
