@@ -6,13 +6,27 @@ import { resolve } from 'path';
 import { deployUnits, completeDeploymentPhase, attack, postAttackTransfer, completeAttackPhase, transfer, completeTransferPhase } from './Moves';
 import { checkBoardState } from './Territory';
 
+export enum FogLevel {
+    None = 0,
+    Light = 1,
+    Medium = 2,
+    Heavy = 3
+}
+
+export type PolyWarRules = {
+    fogLevel: FogLevel
+}
+
 export const PolyWar = {
     name: "poly-war",
     minPlayers: 2,
     maxPlayers: 10,
 
-    setup: (ctx: Ctx) => {
-        // console.log(ctx);
+    rules: { fogLevel: FogLevel.None },
+
+    setup: (ctx: Ctx, setupData: any) => {
+        console.log(`Initial Context:`, ctx);
+        console.log(`Setup Data:`, setupData);
 
         const boardData = JSON.parse(readFileSync(resolve(__dirname, 'map.json'), { encoding: 'utf8' }));
 
@@ -49,6 +63,59 @@ export const PolyWar = {
         console.log(`Players:`, players);
   
         return { boardData, players }
+    },
+
+    playerView: (G, ctx, playerID) => {
+        let g = { ...G };
+
+        const playerArray = Object.keys(g.players ?? {}).map((pid) => {
+            const p = g.players[pid];
+            if (pid !== playerID) {
+                return {
+                    id: p.id,
+                    name: p.name,
+                    colorIdx: p.colorIdx
+                }
+            } else {
+                return p;
+            }
+        })
+        const players = playerArray.reduce((players, p) => {
+            players[p.id] = p;
+            return players;
+        }, {});
+
+        // TODO: This should change based on fog level
+        const territories = g.boardData.territories.map((t) => {
+            // Heavy Fog
+            if (t.controlledBy !== playerID) {
+                return {
+                    id: t.id,
+                    name: t.name,
+                    position: t.position,
+                    groups: t.groups,
+                    borders: t.borders
+                }
+            } else {
+                return t;
+            }
+        })
+
+        const groups = g.boardData.groups.map((grp) => {
+            if (grp.controlledBy !== playerID) {
+                return {
+                    id: grp.id,
+                    name: grp.name,
+                    territories: grp.territories,
+                    territoryCount: grp.territoryCount,
+                    bonusUnits: grp.bonusUnits
+                }
+            } else {
+                return grp;
+            }
+        })
+
+        return { players, boardData: { territories, groups } };
     },
   
     turn: {

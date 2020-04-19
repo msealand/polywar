@@ -110,7 +110,7 @@ export const TerritoryComponent = (props: {
     }
   }
 
-  const units = territory.units ?? 0;
+  const units = territory.units ?? "";
 
   const { fillColor, strokeColor, textColor } = colorsForIdx(territory.colorIdx, /*territory.fogged*/false, isActive);
   const strokeWidth = (isActive ? 2.5 : 0.5)

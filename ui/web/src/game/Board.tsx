@@ -99,6 +99,7 @@ export const BoardComponent = (props: any) => {
   const stage = props.ctx.activePlayers[props.playerID];
   const players = props.G.players;
   props.gameMetadata.forEach((p) => {
+    if (!players[p.id]) players[p.id] = {};
     const player = players[p.id];
     Object.assign(player, p);
   })

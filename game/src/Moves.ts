@@ -22,7 +22,8 @@ export const deployUnits = {
         }
     },
     undoable: true,
-    redact: true
+    redact: true,
+    client: false
 }
 
 export const completeDeploymentPhase = {
@@ -101,8 +102,9 @@ export const attack = {
             }
         }
     },
-    undoable: true,
-    redact: false
+    undoable: false,
+    redact: true,
+    client: false
 }
 
 export const postAttackTransfer = {
@@ -112,8 +114,9 @@ export const postAttackTransfer = {
             ctx.events.setStage('attack');
         }
     },
-    undoable: true,
-    redact: false
+    undoable: false,
+    redact: true,
+    client: false
 }
 
 export const completeAttackPhase = {
@@ -130,7 +133,8 @@ export const transfer = {
     move: (G: any, ctx: Ctx) => {
     },
     undoable: false,
-    redact: false
+    redact: true,
+    client: false
 }
 
 export const completeTransferPhase = {
