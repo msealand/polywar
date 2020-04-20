@@ -37,13 +37,19 @@ export const completeDeploymentPhase = {
 }
 
 export const attack = {
-    move: (G: any, ctx: Ctx, attackingTerritoryId: string, defendingTerritoryId: string) => {
+    move: (G: any, ctx: Ctx, attackingTerritoryId: string, defendingTerritoryId: string, unitCount: number = 3) => {
         const attackingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === attackingTerritoryId);
         const defendingTerritory: Territory = G.boardData.territories.find((t: Territory) => t.id === defendingTerritoryId);
 
         if (attackingTerritory.units <= 1) { console.log(`can't attack with a single unit`); return; }
+        if (attackingTerritory.units < unitCount) { console.log(`can't attack with more units than you have`); return; }
 
-        const attackCount = Math.min(attackingTerritory.units - 1, 3);
+        if (unitCount > 3) {
+            console.log(`TODO: split this in to groups of 3...`);
+            return;
+        }
+
+        const attackCount = Math.min(attackingTerritory.units - 1, unitCount);
         const defendCount = Math.min(defendingTerritory.units, 2);
 
         const random = ctx.random!;
@@ -78,7 +84,7 @@ export const attack = {
             }
         }
         // </crazy warfish dice roll logic>
-        
+
 
         const attackingLosses = al;
         const defendingLosses = dl;

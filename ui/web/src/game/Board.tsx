@@ -29,6 +29,8 @@ const DeploymentToolsComponent = (props: any) => {
 }
 
 const AttackToolsComponent = (props: any) => {
+  console.log(props);
+
   const message = () => {
     if (!props.attacker) return (<div className="pb-3">Pick an attacking territory</div>);
     else if (!props.defender) return (<div className="pb-3">Pick a defending territory</div>);
@@ -47,17 +49,33 @@ const AttackToolsComponent = (props: any) => {
     }
   }
 
+  const attackChoices = () => {
+    const choices: Array<any> = [];
+    for (let i = props.maxAttackCount; i > 0; i--) {
+      const choice = (<a className="dropdown-item" key={`attack-choice-${i}`} href="#" onClick={() => { props.setAttackCount(i); }}>{i} {i != 1 ? "units" : "unit"}</a>);
+      choices.push(choice);
+    }
+    return choices;
+  }
+
   const attackButton = () => {
     if (props.attacker && props.defender) {
       return (
-        <button 
-          type="button" className="btn btn-primary"
-          onClick={() => {
-            props.moves.attack(props.attacker.id, props.defender.id);
-          }}
-        >
-          Attack
-        </button>
+        <div className="btn-group">
+          <button type="button" className="btn btn-danger"
+            onClick={() => {
+              props.moves.attack(props.attacker.id, props.defender.id, props.attackCount);
+            }}
+          >Attack with {props.attackCount ? props.attackCount : "all"} units</button>
+          <button type="button" className="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span className="sr-only">Toggle Dropdown</span>
+          </button>
+          <div className="dropdown-menu">
+            <a className="dropdown-item" href="#" onClick={() => { props.setAttackCount(0); }}>All units</a>
+            <div className="dropdown-divider"></div>
+            {attackChoices()}
+          </div>
+        </div>
       )
     }
   }
@@ -121,6 +139,9 @@ type BoardState = {
   attacker?: string;
   defender?: string;
 
+  attackCount?: number;
+  maxAttackCount?: number;
+
   hoverTerritory?: Territory;
 }
 
@@ -136,7 +157,7 @@ export const BoardComponent = (props: any) => {
     Object.assign(player, p);
   })
 
-  const [ boardState, setBoardState ] = useState<BoardState>({});
+  const [ boardState, setBoardState ] = useState<BoardState>({ });
 
   let tools;
   let isTerritoryActive: ((territory: Territory) => boolean) | undefined = undefined;
@@ -155,8 +176,9 @@ export const BoardComponent = (props: any) => {
     const defender = boardState.defender ? board.territories.find((t) => t.id == boardState.defender) : undefined;
 
     tools = <AttackToolsComponent moves={props.moves} attacker={attacker} defender={defender} cancel={() => {
-      setBoardState({ attacker: undefined, defender: undefined });
-    }} />
+      setBoardState({ attacker: undefined, defender: undefined, maxAttackCount: undefined, attackCount: undefined });
+    }} maxAttackCount={boardState.maxAttackCount} attackCount={boardState.attackCount} setAttackCount={(count) => { setBoardState(Object.assign({}, boardState, { attackCount: count })) }} />
+
     if (boardState.attacker && !boardState.defender) {
       const canBeDefender = (territory: Territory) => {
         const doesBorder = territory.borderingTerritories.some((t) => t.id === boardState.attacker);
@@ -165,7 +187,7 @@ export const BoardComponent = (props: any) => {
       isTerritoryActive = canBeDefender;
       handleTerritoryClick = (territory: Territory) => {
         if (canBeDefender(territory)) {
-          setBoardState({ attacker: boardState.attacker, defender: territory.id });
+          setBoardState({ attacker: boardState.attacker, defender: territory.id, maxAttackCount: boardState.maxAttackCount, attackCount: boardState.attackCount });
         }
       }
     } else if (boardState.attacker && boardState.defender) {
@@ -173,15 +195,16 @@ export const BoardComponent = (props: any) => {
         return (territory.id === boardState.defender) || (territory.id === boardState.attacker)
       }
       handleTerritoryClick = (territory: Territory) => {
-        setBoardState({ attacker: undefined, defender: undefined });
+        setBoardState({ attacker: undefined, defender: undefined, maxAttackCount: undefined, attackCount: undefined });
       }
     } else {
-      isTerritoryActive = (territory: Territory) => {
+      const canBeAttacker = (territory: Territory) => {
         return (territory.controlledBy === props.playerID) && ((territory.units ?? 0) > 0) && territory.borderingTerritories.some((t) => ((t.units ?? 0) > 0) && (t.controlledBy !== props.playerID));
       }
+      isTerritoryActive = canBeAttacker
       handleTerritoryClick = (territory: Territory) => {
-        if (territory.controlledBy === props.playerID) {
-          setBoardState({ attacker: territory.id, defender: undefined });
+        if (canBeAttacker(territory)) {
+          setBoardState({ attacker: territory.id, maxAttackCount: territory.units - 1, attackCount: Math.min(3, territory.units ?? 0) });
         }
       }
     }
@@ -258,7 +281,7 @@ export const BoardComponent = (props: any) => {
   const groupsCard = (territory?: Territory) => {
     return (
       <div className="card mt-3">
-        <div className="card-body p-0 m-0 overflow-auto" style={{ height: "500px" }}>
+        <div className="card-body p-0 m-0 overflow-auto">
           <ul className="list-group list-group-flush p-0 m-0">
             {groups(territory)}
           </ul>
@@ -307,9 +330,6 @@ export const BoardComponent = (props: any) => {
         <tr key={`player-${id}`} style={style}>
           <th scope="row">{player.name}</th>
           <td>{player.reserveUnits}</td>
-          {/* <td >Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td> */}
         </tr>
       )
     })
@@ -329,10 +349,10 @@ export const BoardComponent = (props: any) => {
               isTerritoryActive={isTerritoryActive} 
               handleTerritoryClick={handleTerritoryClick}
               handleTerritoryEntry={(territory: Territory) => {
-                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: territory });
+                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: territory, maxAttackCount: boardState.maxAttackCount, attackCount: boardState.attackCount });
               }}
               handleTerritoryExit={() => {
-                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: undefined });
+                setBoardState({ attacker: boardState.attacker, defender: boardState.defender, hoverTerritory: undefined, maxAttackCount: boardState.maxAttackCount, attackCount: boardState.attackCount });
               }}
             />
 
