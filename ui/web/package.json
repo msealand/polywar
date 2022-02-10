@@ -16,7 +16,7 @@
     "bootstrap": "^4.4.1",
     "d3-delaunay": "^5.2.1",
     "konva": "^4.2.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "polywar": "../../game",
     "react": "^16.13.1",
     "react-bootstrap-icons": "^1.0.1-alpha3",
